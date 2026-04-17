@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Período 3 | Efeito Estufa e Equilíbrio Termodinâmico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .quiz-container {
+            display: none;
+        }
+
+        .quiz-container.active {
+            display: block;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            font-size: 1.05em;
+            line-height: 1.5;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f5f5f5;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #e8eaf6;
+        }
+
+        .option.correct {
+            border-color: #4CAF50;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .option.incorrect {
+            border-color: #FF6B6B;
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .option:disabled {
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            line-height: 1.7;
+            font-size: 1.05em;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #e8f5e9;
+            border-left: 5px solid #4CAF50;
+            color: #2e7d32;
+        }
+
+        .feedback.incorrect {
+            background: #ffebee;
+            border-left: 5px solid #FF6B6B;
+            color: #c62828;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .feedback-content {
+            color: #555;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            font-size: 1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+            transform: translateY(-3px);
+        }
+
+        .progress-info {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #81C784);
+            transition: width 0.3s ease;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .difficulty.easy {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .difficulty.medium {
+            background: #fff9c4;
+            color: #f57f17;
+        }
+
+        .difficulty.hard {
+            background: #ffccbc;
+            color: #d84315;
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #81C784 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .results-header h2 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .score-display {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .score-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .score-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-card.correct {
+            border-top: 5px solid #4CAF50;
+        }
+
+        .score-card.incorrect {
+            border-top: 5px solid #FF6B6B;
+        }
+
+        .score-card-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .score-card.correct .score-card-number {
+            color: #4CAF50;
+        }
+
+        .score-card.incorrect .score-card-number {
+            color: #FF6B6B;
+        }
+
+        .score-card-label {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .percentage {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 1.3em;
+            margin-bottom: 30px;
+        }
+
+        .percentage-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .message {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #333;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .message.excellent {
+            color: #4CAF50;
+        }
+
+        .message.good {
+            color: #2196F3;
+        }
+
+        .message.fair {
+            color: #FF9800;
+        }
+
+        .message.improve {
+            color: #FF6B6B;
+        }
+
+        .footer {
+            background: #f5f5f5;
+            padding: 30px;
+            text-align: center;
+            border-top: 3px solid #667eea;
+        }
+
+        .footer-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.6em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .score-details {
+                grid-template-columns: 1fr;
+            }
+
+            .results-header h2 {
+                font-size: 1.8em;
+            }
+
+            .score-display {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Quiz - Efeito Estufa & Termodinâmica</h1>
+            <p>Período 3 | 24 Perguntas</p>
+        </div>
+
+        <div class="content">
+            <div class="progress-info">
+                <div id="progressText">Pergunta 1 de 24</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 4%"></div>
+                </div>
+            </div>
+
+            <div id="quizContent"></div>
+
+            <div id="resultsContainer" class="results">
+                <div class="results-header">
+                    <h2>🎉 Parabéns!</h2>
+                    <p>Você completou o quiz!</p>
+                </div>
+
+                <div class="percentage">
+                    <div>Seu Desempenho</div>
+                    <div class="percentage-number" id="percentageDisplay">0%</div>
+                </div>
+
+                <div class="score-details">
+                    <div class="score-card correct">
+                        <div class="score-card-label">Acertos</div>
+                        <div class="score-card-number" id="correctCount">0</div>
+                    </div>
+                    <div class="score-card incorrect">
+                        <div class="score-card-label">Erros</div>
+                        <div class="score-card-number" id="incorrectCount">0</div>
+                    </div>
+                </div>
+
+                <div id="messageFeedback"></div>
+
+                <div style="margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="location.href='guia-periodo-3.html'">📚 Voltar ao Guia de Estudo</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Bom estudos, Murilo! 🌟</p>
+        </div>
+    </div>
+
+    <script>
+        // Dados das perguntas com respostas variadas em comprimento
+        const questions = [
+            // FÁCEIS (1-8)
+            {
+                id: 1,
+                text: "O efeito estufa é um fenômeno natural ou totalmente causado pelo homem?",
+                difficulty: "easy",
+                options: [
+                    { text: "É totalmente criado pelo homem, não é natural", correct: false, explanation: "Errado. O efeito estufa é um processo NATURAL e ESSENCIAL para a vida. Sem ele, a temperatura seria -18°C. O homem está apenas intensificando este processo natural aumentando gases de efeito estufa." },
+                    { text: "É um processo natural e essencial, mas o homem o intensifica", correct: true, explanation: "Correto! O efeito estufa é NATURAL e ESSENCIAL para que haja vida na Terra. O que o homem faz é aumentar a concentração de gases de efeito estufa, intensificando o fenômeno." },
+                    { text: "É inventado por cientistas para assustar as pessoas", correct: false, explanation: "Não é verdade. O efeito estufa é um fenômeno físico real estudado por cientistas há muito tempo. É comprovado cientificamente e não é uma invenção para assustar." },
+                    { text: "Não existe efeito estufa, é apenas uma teoria", correct: false, explanation: "Errado. O efeito estufa é um fato científico comprovado. Podemos medir os gases na atmosfera e seus efeitos na temperatura do planeta." }
+                ]
+            },
+            {
+                id: 2,
+                text: "Qual seria a temperatura média da Terra SEM o efeito estufa natural?",
+                difficulty: "easy",
+                options: [
+                    { text: "0°C", correct: false, explanation: "Não. Sem o efeito estufa, a temperatura seria muito mais fria. A resposta correta é -18°C, tornando impossível a existência de vida como conhecemos." },
+                    { text: "-18°C", correct: true, explanation: "Correto! Sem o efeito estufa natural, a temperatura média seria -18°C, o que tornaria a vida impossível. É por isso que o efeito estufa é ESSENCIAL para o planeta." },
+                    { text: "25°C", correct: false, explanation: "Não. 25°C seria na verdade mais quente que a atual. Sem o efeito estufa, faria muito frio, cerca de -18°C." },
+                    { text: "10°C", correct: false, explanation: "Não é correto. O valor é bem mais baixo. Sem o efeito estufa, teríamos -18°C de temperatura média." }
+                ]
+            },
+            {
+                id: 3,
+                text: "Qual é a temperatura média atual da Terra COM o efeito estufa natural?",
+                difficulty: "easy",
+                options: [
+                    { text: "20°C", correct: false, explanation: "Próximo, mas não é exato. A temperatura média é 15°C, o que permite as condições perfeitas para a vida na Terra." },
+                    { text: "15°C", correct: true, explanation: "Correto! Com o efeito estufa natural, a temperatura média da Terra é 15°C. Esta é a temperatura ideal que permite a existência de vida como conhecemos." },
+                    { text: "30°C", correct: false, explanation: "Não. 30°C seria muito quente. A temperatura média real é 15°C. Os 30°C que você sente em alguns dias é local, não global." },
+                    { text: "-5°C", correct: false, explanation: "Não. Essa temperatura seria muito fria. Com o efeito estufa natural, a média é 15°C, permitindo vida na Terra." }
+                ]
+            },
+            {
+                id: 4,
+                text: "Qual é o principal gás de efeito estufa produzido pela queima de combustíveis fósseis?",
+                difficulty: "easy",
+                options: [
+                    { text: "Oxigênio (O₂)", correct: false, explanation: "Não. Oxigênio não é um gás de efeito estufa. O principal gás produzido pela queima de combustíveis fósseis é o dióxido de carbono (CO₂)." },
+                    { text: "Dióxido de carbono (CO₂)", correct: true, explanation: "Correto! O dióxido de carbono (CO₂) é o principal gás de efeito estufa produzido pelo homem através da queima de combustíveis fósseis como carvão, petróleo e gás natural." },
+                    { text: "Nitrogênio (N₂)", correct: false, explanation: "Não. Nitrogênio é o gás mais abundante da atmosfera, mas não é gás de efeito estufa. O responsável é o CO₂." },
+                    { text: "Hélio (He)", correct: false, explanation: "Não. Hélio é um elemento nobre muito raro. O gás de efeito estufa principal produzido por combustíveis fósseis é o CO₂." }
+                ]
+            },
+            {
+                id: 5,
+                text: "O que afirma a 1ª Lei da Termodinâmica?",
+                difficulty: "easy",
+                options: [
+                    { text: "A energia sempre aumenta", correct: false, explanation: "Não. A 1ª Lei não diz que energia aumenta. Ela afirma que a energia não se cria nem se destrói, apenas se transforma." },
+                    { text: "A energia não se cria nem se destrói, apenas se transforma", correct: true, explanation: "Correto! A 1ª Lei da Termodinâmica é exatamente isso: a energia é conservada. Ela não desaparece, apenas muda de forma." },
+                    { text: "A temperatura é sempre igual em todo lugar", correct: false, explanation: "Não. A 1ª Lei fala sobre conservação de energia, não sobre igualdade de temperatura." },
+                    { text: "Todos os gases se comportam da mesma forma", correct: false, explanation: "Não. A 1ª Lei da Termodinâmica diz que a energia não se cria nem se destrói, apenas se transforma." }
+                ]
+            },
+            {
+                id: 6,
+                text: "Em qual estrutura celular ocorre a fotossíntese?",
+                difficulty: "easy",
+                options: [
+                    { text: "Mitocôndria", correct: false, explanation: "Não. Mitocôndria é onde ocorre RESPIRAÇÃO celular. Fotossíntese ocorre nos CLOROPLASTOS." },
+                    { text: "Núcleo", correct: false, explanation: "Não. O núcleo armazena informações genéticas, não realiza fotossíntese. Fotossíntese ocorre nos cloroplastos." },
+                    { text: "Cloroplasto", correct: true, explanation: "Correto! A fotossíntese ocorre nos CLOROPLASTOS, estruturas especializadas nas células das plantas que contêm clorofila, o pigmento que absorve luz solar." },
+                    { text: "Ribossomo", correct: false, explanation: "Não. Ribossomo sintetiza proteínas. A fotossíntese ocorre nos cloroplastos das células vegetais." }
+                ]
+            },
+            {
+                id: 7,
+                text: "Quais organismos produzem mais de 50% do oxigênio da atmosfera?",
+                difficulty: "easy",
+                options: [
+                    { text: "Árvores das florestas", correct: false, explanation: "As florestas são importantes, mas não produzem mais de 50% do oxigênio. Os fitoplânctons (algas microscópicas dos oceanos) produzem mais de 50%." },
+                    { text: "Cactus e plantas desérticas", correct: false, explanation: "Não. Plantas desérticas produzem pouco oxigênio. Mais de 50% vem dos fitoplânctons nos oceanos." },
+                    { text: "Fitoplânctons (algas microscópicas)", correct: true, explanation: "Correto! Os fitoplânctons - algas microscópicas como dinoflagelados, diatomáceas e cianobactérias - vivem nos oceanos e produzem mais de 50% do oxigênio atmosférico que respiramos!" },
+                    { text: "Bactérias do solo", correct: false, explanation: "Não. Bactérias do solo não realizam fotossíntese de forma a produzir oxigênio. Quem faz isso são os fitoplânctons nos oceanos." }
+                ]
+            },
+            {
+                id: 8,
+                text: "Dê exemplos de combustíveis fósseis.",
+                difficulty: "easy",
+                options: [
+                    { text: "Madeira e papel reciclado", correct: false, explanation: "Não são combustíveis fósseis. Combustíveis fósseis são formados de organismos mortos há milhões de anos. Exemplos: carvão, petróleo e gás natural." },
+                    { text: "Carvão, petróleo e gás natural", correct: true, explanation: "Correto! Os principais combustíveis fósseis são: CARVÃO (usado em usinas de energia), PETRÓLEO (combustível para carros) e GÁS NATURAL (aquecimento e eletricidade). Todos foram formados há milhões de anos." },
+                    { text: "Sol e água", correct: false, explanation: "Sol e água são fontes de energia renováveis, não combustíveis fósseis. Combustíveis fósseis são carvão, petróleo e gás natural." },
+                    { text: "Álcool e biodiesel", correct: false, explanation: "Estes são biocombustíveis renováveis, não combustíveis fósseis. Os combustíveis fósseis são carvão, petróleo e gás natural." }
+                ]
+            },
+
+            // MÉDIAS (9-16)
+            {
+                id: 9,
+                text: "Cite os 5 principais gases de efeito estufa.",
+                difficulty: "medium",
+                options: [
+                    { text: "Oxigênio, nitrogênio, argônio, neon e hélio", correct: false, explanation: "Não. Esses são gases da atmosfera normal, mas não são gases de efeito estufa. Os principais são: vapor de água (H₂O), dióxido de carbono (CO₂), metano (CH₄), óxido nitroso (N₂O) e ozônio (O₃)." },
+                    { text: "Vapor de água, CO₂, metano, óxido nitroso e ozônio", correct: true, explanation: "Correto! Os 5 principais gases de efeito estufa são: 1) VAPOR DE ÁGUA (H₂O) - o mais abundante, 2) DIÓXIDO DE CARBONO (CO₂) - da combustão, 3) METANO (CH₄) - da pecuária, 4) ÓXIDO NITROSO (N₂O) - de fertilizantes, e 5) OZÔNIO (O₃)." },
+                    { text: "Cloro, flúor, bromo, iodo e criptônio", correct: false, explanation: "Não. Esses não são gases de efeito estufa. Os principais são: vapor de água, CO₂, metano, óxido nitroso e ozônio." },
+                    { text: "Apenas dióxido de carbono", correct: false, explanation: "CO₂ é o principal produzido pelo homem, mas não é o único. Há 5 principais: vapor de água, CO₂, metano, óxido nitroso e ozônio." }
+                ]
+            },
+            {
+                id: 10,
+                text: "O que é entropia e como ela se relaciona com os estados da matéria?",
+                difficulty: "medium",
+                options: [
+                    { text: "É a energia total de uma substância", correct: false, explanation: "Não. Entropia não é energia total. Entropia é o GRAU DE DESORDEM. Sólido tem menos entropia (mais organizado), líquido tem média, e gás tem mais entropia (muito desorganizado)." },
+                    { text: "É o grau de desordem: sólido tem menos, líquido tem média, gás tem mais", correct: true, explanation: "Correto! ENTROPIA mede o grau de DESORDEM de um sistema. Sólidos têm baixa entropia (bem organizados), líquidos têm entropia média, e gases têm alta entropia (muito desorganizados). Quanto mais gasoso, maior a desordem." },
+                    { text: "É a temperatura de um objeto qualquer", correct: false, explanation: "Não. Entropia não é temperatura. Entropia é o GRAU DE DESORDEM. Ordem: Sólido (menos desordem) < Líquido < Gás (mais desordem)." },
+                    { text: "É apenas um conceito teórico sem aplicação prática", correct: false, explanation: "Não. Entropia é um conceito físico real. Ela descreve o grau de desordem: sólidos têm pouca entropia, gases têm muita entropia." }
+                ]
+            },
+            {
+                id: 11,
+                text: "Qual é a diferença entre efeito estufa natural e aquecimento global?",
+                difficulty: "medium",
+                options: [
+                    { text: "Não há diferença, são a mesma coisa", correct: false, explanation: "Há SIM diferença! Efeito estufa natural é essencial e mantém a vida. Aquecimento global é o aumento do efeito estufa causado pelo homem ao queimar combustíveis fósseis." },
+                    { text: "Efeito estufa é natural e essencial; aquecimento global é o aumento causado pelo homem intensificando o efeito natural", correct: true, explanation: "Correto! EFEITO ESTUFA NATURAL = fenômeno que mantém a Terra em 15°C. AQUECIMENTO GLOBAL = aumento da temperatura causado pelo homem aumentando gases de efeito estufa através da queima de combustíveis fósseis." },
+                    { text: "Aquecimento global é natural e efeito estufa é criado pelo homem", correct: false, explanation: "Ao contrário! Efeito estufa é natural e essencial. Aquecimento global é o aumento causado pelo homem intensificando este efeito natural." },
+                    { text: "Efeito estufa ocorre apenas em estufa de plantas", correct: false, explanation: "Não. O efeito estufa é um fenômeno que ocorre em toda a atmosfera terrestre. O nome vem porque funciona como uma estufa, mas ocorre em escala global." }
+                ]
+            },
+            {
+                id: 12,
+                text: "Como a queimada de florestas contribui para o aquecimento global?",
+                difficulty: "medium",
+                options: [
+                    { text: "As árvores absorvem gases de efeito estufa, então queimá-las não afeta", correct: false, explanation: "Errado! As árvores FAZEM sequestro de carbono (absorvem CO₂). Ao queimar: 1) Libera CO₂ armazenado, 2) Destrói futuras plantas que absorveriam CO₂, intensificando o aquecimento." },
+                    { text: "Libera o CO₂ armazenado nas árvores e destrói plantas que fariam sequestro de carbono", correct: true, explanation: "Correto! Queimadas causam aquecimento porque: 1) LIBERAM CO₂ armazenado nas árvores, 2) DESTROEM futuras plantas que fariam sequestro de carbono (absorção de CO₂), 3) Há MENOS absorção de CO₂ e MAIS liberação, intensificando o efeito estufa." },
+                    { text: "O fogo esfria a atmosfera", correct: false, explanation: "Não. O fogo libera energia e gases de efeito estufa, aquecendo a atmosfera. Além disso, árvores queimadas deixam de fazer sequestro de carbono." },
+                    { text: "Florestas não têm relação com o clima", correct: false, explanation: "Muito errado! Florestas têm papel crucial. Fazem sequestro de carbono (absorvem CO₂). Queimá-las libera CO₂ e piora o aquecimento global." }
+                ]
+            },
+            {
+                id: 13,
+                text: "Qual é a distribuição da energia solar que chega à Terra?",
+                difficulty: "medium",
+                options: [
+                    { text: "20% refletida, 40% superfície, 40% atmosfera", correct: false, explanation: "Não. A distribuição correta é: 30% refletida (nuvens, superfície, partículas), 51% absorvida pela superfície (aquece oceanos e continentes), 19% absorvida pela atmosfera." },
+                    { text: "30% refletida, 51% absorvida pela superfície, 19% absorvida pela atmosfera", correct: true, explanation: "Correto! Da energia solar que chega à Terra: 30% é REFLETIDA (volta ao espaço), 51% é ABSORVIDA PELA SUPERFÍCIE (aquece oceanos e continentes), 19% é ABSORVIDA PELA ATMOSFERA. Total absorvido: 70%." },
+                    { text: "50% refletida, 30% superfície, 20% atmosfera", correct: false, explanation: "Não. A distribuição real é: 30% refletida, 51% absorvida pela superfície, 19% absorvida pela atmosfera." },
+                    { text: "Toda energia solar é absorvida", correct: false, explanation: "Não. 30% da energia solar é refletida de volta ao espaço. Apenas 70% (51% + 19%) é absorvido pelo sistema Terra." }
+                ]
+            },
+            {
+                id: 14,
+                text: "O que é sequestro de carbono e quem o realiza?",
+                difficulty: "medium",
+                options: [
+                    { text: "É quando prisioneiros pegam carbono", correct: false, explanation: "Não! Sequestro de carbono é um processo natural onde seres vivos ABSORVEM CO₂ da atmosfera. Realizado por fitoplânctons (algas dos oceanos) e florestas." },
+                    { text: "É o processo de absorver CO₂ da atmosfera, realizado por fitoplânctons e florestas", correct: true, explanation: "Correto! SEQUESTRO DE CARBONO = retirada de CO₂ da atmosfera. Realizado por: 1) FITOPLÂNCTONS (algas microscópicas nos oceanos), 2) FLORESTAS (árvores). Ambos fazem fotossíntese e absorvem carbono." },
+                    { text: "É a queima de combustíveis", correct: false, explanation: "Não. A queima de combustíveis LIBERA CO₂. Sequestro de carbono é o OPOSTO - absorve CO₂ da atmosfera através da fotossíntese." },
+                    { text: "É um método de armazenar lixo", correct: false, explanation: "Não. Sequestro de carbono é quando seres vivos absorvem CO₂ através da fotossíntese, realizado por fitoplânctons e florestas." }
+                ]
+            },
+            {
+                id: 15,
+                text: "Quais são as principais consequências do aquecimento global?",
+                difficulty: "medium",
+                options: [
+                    { text: "Apenas secas em desertos", correct: false, explanation: "Não. As consequências são muito mais amplas: derretimento de geleiras, elevação do nível dos mares, eventos climáticos extremos (secas, tempestades, ondas de calor) e perda de biodiversidade." },
+                    { text: "Derretimento de geleiras, elevação do nível do mar, eventos extremos e perda de biodiversidade", correct: true, explanation: "Correto! As principais consequências são: 1) Derretimento de geleiras e calotas polares, 2) Elevação do nível dos mares → inundações costeiras, 3) Eventos climáticos extremos (secas, tempestades, ondas de calor), 4) Perda de biodiversidade (espécies não conseguem se adaptar)." },
+                    { text: "Apenas aumento de temperatura", correct: false, explanation: "O aumento de temperatura causa muitas consequências! Derretimento de geleiras, elevação do nível do mar, eventos extremos e perda de biodiversidade." },
+                    { text: "Não há consequências reais", correct: false, explanation: "Há SIM! Consequências reais: derretimento de geleiras, elevação do nível do mar, tempestades intensas, secas severas e extinção de espécies." }
+                ]
+            },
+            {
+                id: 16,
+                text: "O que são CFCs e por que são prejudiciais?",
+                difficulty: "medium",
+                options: [
+                    { text: "São vitaminas necessárias para a saúde", correct: false, explanation: "Não. CFCs (Clorofluorcarbonos) não são vitaminas. São gases usados em refrigeradores e aerossóis que DESTROEM a camada de ozônio, prejudicando a vida." },
+                    { text: "Clorofluorcarbonos usados em refrigeradores e aerossóis que destroem a camada de ozônio", correct: true, explanation: "Correto! CFCs (Clorofluorcarbonos) são gases químicos usados em: refrigeradores, aparelhos de ar condicionado e aerossóis. São prejudiciais porque DESTROEM a CAMADA DE OZÔNIO, permitindo mais radiação UV atingir a Terra, causando câncer de pele e problemas imunológicos." },
+                    { text: "São gases que protegem a camada de ozônio", correct: false, explanation: "Não. CFCs DESTROEM a camada de ozônio, não protegem. São gases usados em refrigeradores e aerossóis." },
+                    { text: "São uma sigla para combustíveis fósseis", correct: false, explanation: "Não. CFCs significam Clorofluorcarbonos, não combustíveis fósseis. São gases que destroem a camada de ozônio." }
+                ]
+            },
+
+            // DIFÍCEIS (17-24)
+            {
+                id: 17,
+                text: "Por que Mercúrio apresenta temperaturas extremas (-173°C a 426°C) se recebe energia do Sol?",
+                difficulty: "hard",
+                options: [
+                    { text: "Porque Mercúrio fica muito próximo do Sol", correct: false, explanation: "Embora Mercúrio seja perto do Sol, isso não é a razão principal. Mercúrio tem temperaturas extremas porque NÃO TEM atmosfera densa que faça efeito estufa para distribuir o calor uniformemente entre dia e noite." },
+                    { text: "Porque não tem atmosfera densa para fazer efeito estufa e distribuir calor uniformemente", correct: true, explanation: "Correto! Mercúrio SEM atmosfera densa = SEM efeito estufa. Resultado: no lado voltado ao Sol = 426°C (muito quente), lado oposto = -173°C (congelado). Sem atmosfera, não há distribuição de calor. Comparar com Terra que tem atmosfera e efeito estufa para manter temperatura constante." },
+                    { text: "Porque está em órbita instável", correct: false, explanation: "Não. Mercúrio tem órbita estável. As temperaturas extremas existem porque SEM atmosfera densa, não há efeito estufa para distribuir calor entre dia e noite." },
+                    { text: "Porque tem mais gases de efeito estufa que a Terra", correct: false, explanation: "Não. Mercúrio tem MENOS atmosfera, não mais. A falta de atmosfera densa impossibilita o efeito estufa necessário para distribuir calor, causando temperaturas extremas." }
+                ]
+            },
+            {
+                id: 18,
+                text: "Explique como a pecuária e o desmatamento contribuem para aquecimento global.",
+                difficulty: "hard",
+                options: [
+                    { text: "Pecuária produz leite, desmatamento reduz plantas - sem relação com clima", correct: false, explanation: "Está errado! PECUÁRIA produz METANO (CH₄) das vacas, um gás de efeito estufa potente. DESMATAMENTO remove árvores que fazem sequestro de carbono (absorvem CO₂), deixando mais CO₂ na atmosfera. Ambos intensificam aquecimento." },
+                    { text: "Pecuária emite metano e desmatamento remove árvores que sequestram carbono", correct: true, explanation: "Correto! PECUÁRIA contribui porque: gado (vacas) produz METANO (CH₄), potente gás de efeito estufa. DESMATAMENTO contribui porque: remove ÁRVORES que fazem SEQUESTRO DE CARBONO (absorvem CO₂). Resultado: MAIS CH₄ e MAIS CO₂ na atmosfera → aquecimento intensificado." },
+                    { text: "Apenas a pecuária contribui", correct: false, explanation: "Ambas contribuem! Pecuária emite metano (CH₄). Desmatamento remove árvores que absorvem CO₂ e fazem sequestro de carbono." },
+                    { text: "Apenas o desmatamento contribui", correct: false, explanation: "Ambas contribuem! Desmatamento remove sequestro de carbono. Pecuária produz metano das vacas. Os dois intensificam o aquecimento global." }
+                ]
+            },
+            {
+                id: 19,
+                text: "Descreva o ciclo de retroalimentação negativa entre oceanos, fitoplânctons e CO₂.",
+                difficulty: "hard",
+                options: [
+                    { text: "Não existe relação entre oceanos e fitoplânctons", correct: false, explanation: "Existe SIM! Ciclo: 1) Aquecimento dos oceanos, 2) Reduz fotossíntese do fitoplâncton, 3) Menos CO₂ absorvido, 4) Mais CO₂ na atmosfera, 5) Temperatura sobe ainda mais. É um ciclo de piora contínua." },
+                    { text: "Aquecimento dos oceanos reduz fotossíntese do fitoplâncton → menos CO₂ absorvido → temperatura sobe ainda mais", correct: true, explanation: "Correto! CICLO DE RETROALIMENTAÇÃO: 1) Oceanos aquecem (por mais CO₂), 2) Fitoplânctons têm menos condições de fazer fotossíntese, 3) Menos CO₂ é absorvido do ar, 4) CO₂ continua aumentando na atmosfera, 5) Temperatura sobe ainda mais, 6) Oceanos aquecem mais... ciclo piorador!" },
+                    { text: "Fitoplânctons produzem mais CO₂ quando oceanos aquecem", correct: false, explanation: "Não. Fitoplânctons ABSORVEM CO₂ (fotossíntese). Quando oceanos aquecem, eles REDUZEM essa absorção, deixando mais CO₂ na atmosfera e intensificando o aquecimento." },
+                    { text: "Oceanos absorvem mais CO₂ quando aquecem", correct: false, explanation: "Ao contrário! Quando oceanos aquecem, a fotossíntese do fitoplâncton REDUZ, absorvendo MENOS CO₂. Isso deixa mais CO₂ na atmosfera, intensificando o aquecimento." }
+                ]
+            },
+            {
+                id: 20,
+                text: "Compare fotossíntese e respiração celular em termos de trocas de carbono e oxigênio.",
+                difficulty: "hard",
+                options: [
+                    { text: "Fotossíntese e respiração são idênticas", correct: false, explanation: "Não! São OPOSTAS! Fotossíntese: CO₂ + H₂O + luz → glicose + O₂. Respiração: glicose + O₂ → CO₂ + H₂O + ATP. Uma ABSORVE CO₂ e LIBERA O₂, a outra faz o contrário." },
+                    { text: "Fotossíntese absorve CO₂ e libera O₂; respiração absorve O₂ e libera CO₂ - são processos opostos", correct: true, explanation: "Perfeito! FOTOSSÍNTESE: CO₂ + H₂O + luz solar → glicose + O₂ (ABSORVE carbono, LIBERA oxigênio). RESPIRAÇÃO: glicose + O₂ → CO₂ + H₂O + ATP (ABSORVE oxigênio, LIBERA carbono). São quase INVERSAS uma da outra!" },
+                    { text: "Ambas liberam CO₂", correct: false, explanation: "Não! Fotossíntese ABSORVE CO₂ (retira da atmosfera). Respiração LIBERA CO₂. São processos opostos!" },
+                    { text: "Ambas absorvem O₂", correct: false, explanation: "Não! Fotossíntese LIBERA O₂ (produz oxigênio). Respiração ABSORVE O₂. São processos inversos!" }
+                ]
+            },
+            {
+                id: 21,
+                text: "Por que a destruição da camada de ozônio é um problema diferente do aquecimento global?",
+                difficulty: "hard",
+                options: [
+                    { text: "São exatamente o mesmo problema", correct: false, explanation: "Não! São diferentes! Aquecimento: gases de efeito estufa trapicam calor na atmosfera. Ozônio: CFCs destroem O₃ na estratosfera, deixando passar mais radiação UV, não relacionado ao calor." },
+                    { text: "Aquecimento envolve gases de efeito estufa prendendo calor; destruição do ozônio envolve CFCs permitindo mais radiação UV", correct: true, explanation: "Correto! SÃO PROBLEMAS DIFERENTES! AQUECIMENTO GLOBAL: gases de efeito estufa (CO₂, CH₄) prendem calor infravermelho. OZÔNIO: CFCs destroem O₃ na estratosfera, permitindo mais RADIAÇÃO ULTRAVIOLETA (UV) passar, causando câncer de pele. Mecanismos e efeitos totalmente diferentes!" },
+                    { text: "Destruição do ozônio causa aquecimento", correct: false, explanation: "Não são diretamente relacionados. Destruição do ozônio permite mais UV (não calor). Aquecimento é causado por gases de efeito estufa que prendem calor infravermelho." },
+                    { text: "Ambos têm a mesma causa - combustíveis fósseis", correct: false, explanation: "Não! Aquecimento é causado principalmente por combustíveis fósseis. Destruição do ozônio é causada por CFCs. Causas diferentes!" }
+                ]
+            },
+            {
+                id: 22,
+                text: "Como as atividades da Revolução Industrial iniciaram o processo de aquecimento global?",
+                difficulty: "hard",
+                options: [
+                    { text: "Não tiveram relação com aquecimento global", correct: false, explanation: "Teve SIM! Revolução Industrial: fábricas, máquinas, transportes = queimaram muito carvão e petróleo, liberando CO₂ em massa. Marcou o INÍCIO do aquecimento global causado pelo homem." },
+                    { text: "Usaram máquinas a vapor e fábricas que queimavam carvão em grande escala, liberando muito CO₂", correct: true, explanation: "Correto! REVOLUÇÃO INDUSTRIAL (séc. XVIII-XIX): 1) Máquinas a vapor queimavam CARVÃO, 2) Fábricas espalharam-se por toda Europa, 3) Começou queima em LARGA ESCALA de combustíveis fósseis, 4) Pela primeira vez o homem liberava CO₂ massivamente na atmosfera, 5) MARCO DO INÍCIO do aquecimento global causado pelo homem!" },
+                    { text: "Plantaram muitas árvores que causaram aquecimento", correct: false, explanation: "Não. Árvores absorvem CO₂! A Revolução Industrial QUEIMOU carvão em máquinas e fábricas, liberando CO₂." },
+                    { text: "Usaram CFCs para refrigeração", correct: false, explanation: "CFCs foram inventados depois. A Revolução Industrial usava CARVÃO em máquinas a vapor e fábricas, liberando CO₂ em grande escala pela primeira vez." }
+                ]
+            },
+            {
+                id: 23,
+                text: "Explique a 2ª Lei da Termodinâmica e dê um exemplo do cotidiano.",
+                difficulty: "hard",
+                options: [
+                    { text: "A temperatura sempre aumenta", correct: false, explanation: "Não! A 2ª Lei diz que a ENTROPIA (desordem) de um sistema isolado TENDE A AUMENTAR. Exemplo: um quarto bagunçado tende a ficar mais bagunçado, não mais organizado." },
+                    { text: "A entropia de um sistema isolado tende a aumentar (desordem cresce). Exemplo: quarto limpo fica bagunçado com o tempo", correct: true, explanation: "Correto! 2ª LEI: A ENTROPIA (desordem) de um sistema isolado TENDE A AUMENTAR com o tempo. EXEMPLOS: 1) Um quarto limpo naturalmente fica bagunçado, não o contrário. 2) Um copo caindo quebra em pedaços, não se remonta sozinho. 3) Calor quente espalhado em um quarto se dispersa, não volta a um ponto quente." },
+                    { text: "A energia desaparece do universo", correct: false, explanation: "Não! Isso seria a negação da 1ª Lei. A 2ª Lei fala sobre ENTROPIA (desordem). Um quarto tende a ficar bagunçado, não porque energia desaparece, mas porque desordem aumenta." },
+                    { text: "Não há lei da termodinâmica chamada 2ª Lei", correct: false, explanation: "Existe SIM! A 2ª Lei da Termodinâmica diz que a entropia (desordem) de um sistema isolado tende a aumentar. Exemplo: quarto limpo fica naturalmente bagunçado." }
+                ]
+            },
+            {
+                id: 24,
+                text: "Como o IPCC e cientistas monitoram o aquecimento global?",
+                difficulty: "hard",
+                options: [
+                    { text: "Apenas observam a temperatura do ar manualmente", correct: false, explanation: "Não! É muito mais complexo. Cientistas usam: satélites, estações de medição globais, análise de gases atmosféricos, dados dos oceanos, e o IPCC compila dados de milhares de cientistas em relatórios." },
+                    { text: "Usam satélites, estações globais de medição, análise de gases atmosféricos, dados oceânicos e o IPCC compila relatórios científicos", correct: true, explanation: "Correto! Monitoramento do aquecimento: 1) SATÉLITES medem temperatura, CO₂, radiação solar, 2) ESTAÇÕES GLOBAIS medem gases e temperatura, 3) Análise de GASES ATMOSFÉRICOS mostra aumento de CO₂ e CH₄, 4) DADOS DOS OCEANOS mostram aquecimento e degelo, 5) IPCC (Painel Intergovernamental) reúne cientistas do mundo e publica RELATÓRIOS com evidências científicas do aquecimento." },
+                    { text: "Os cientistas inventam dados para assustar as pessoas", correct: false, explanation: "Não! Os dados são reais e verificáveis. Satélites e estações independentes confirmam. O IPCC compila dados de milhares de cientistas. É ciência, não ficção." },
+                    { text: "Não há como monitorar o aquecimento global", correct: false, explanation: "Há muitas formas! Satélites, estações terrestres, análise de gases atmosféricos, dados dos oceanos. O IPCC compila e publica esses dados cientificamente." }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        function initQuiz() {
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            const quizContent = document.getElementById('quizContent');
+
+            let html = `
+                <div class="quiz-container active">
+                    <div class="question-number">Pergunta ${q.id} de 24 <span class="difficulty ${q.difficulty}">${getDifficultyLabel(q.difficulty)}</span></div>
+                    <div class="question-text">${q.text}</div>
+                    <div class="options">
+            `;
+
+            q.options.forEach((option, idx) => {
+                const letter = String.fromCharCode(65 + idx);
+                html += `
+                    <button class="option" onclick="selectAnswer(${currentQuestion}, ${idx})" data-index="${idx}">
+                        <strong>${letter})</strong> ${option.text}
+                    </button>
+                `;
+            });
+
+            html += `
+                    </div>
+                    <div class="feedback" id="feedback-${currentQuestion}"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Próxima Pergunta →</button>
+                        <button class="btn btn-secondary" onclick="previousQuestion()">← Pergunta Anterior</button>
+                    </div>
+                </div>
+            `;
+
+            quizContent.innerHTML = html;
+            updateProgress();
+        }
+
+        function getDifficultyLabel(diff) {
+            if (diff === 'easy') return 'Fácil ✓';
+            if (diff === 'medium') return 'Média ⚡';
+            return 'Difícil 🔥';
+        }
+
+        function selectAnswer(qIdx, optIdx) {
+            const q = questions[qIdx];
+            const option = q.options[optIdx];
+            const buttons = document.querySelectorAll(`.quiz-container.active .option`);
+
+            buttons.forEach(btn => btn.disabled = true);
+
+            const selectedBtn = buttons[optIdx];
+            const feedback = document.getElementById(`feedback-${qIdx}`);
+
+            userAnswers[qIdx] = optIdx;
+
+            if (option.correct) {
+                selectedBtn.classList.add('correct');
+                feedback.innerHTML = `
+                    <div class="feedback correct show">
+                        <div class="feedback-title">✓ Acertou!</div>
+                        <div class="feedback-content">${option.explanation}</div>
+                    </div>
+                `;
+                score++;
+            } else {
+                selectedBtn.classList.add('incorrect');
+                const correctIdx = q.options.findIndex(o => o.correct);
+                const correctBtn = buttons[correctIdx];
+                correctBtn.classList.add('correct');
+
+                feedback.innerHTML = `
+                    <div class="feedback incorrect show">
+                        <div class="feedback-title">✗ Resposta incorreta</div>
+                        <div class="feedback-content"><strong>Resposta correta:</strong> ${q.options[correctIdx].text}<br><br>${option.explanation}</div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+                window.scrollTo(0, 0);
+            } else {
+                showResults();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function updateProgress() {
+            const percentage = Math.round(((currentQuestion + 1) / questions.length) * 100);
+            document.getElementById('progressText').textContent = `Pergunta ${currentQuestion + 1} de ${questions.length}`;
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+        function showResults() {
+            const quizContent = document.getElementById('quizContent');
+            const resultsContainer = document.getElementById('resultsContainer');
+
+            quizContent.style.display = 'none';
+            resultsContainer.classList.add('show');
+
+            const percentage = Math.round((score / questions.length) * 100);
+            const incorrect = questions.length - score;
+
+            document.getElementById('percentageDisplay').textContent = percentage + '%';
+            document.getElementById('correctCount').textContent = score;
+            document.getElementById('incorrectCount').textContent = incorrect;
+
+            let message = '';
+            let messageClass = '';
+
+            if (percentage >= 90) {
+                message = '🌟 Excelente! Você é um expert em Termodinâmica e Efeito Estufa!';
+                messageClass = 'excellent';
+            } else if (percentage >= 75) {
+                message = '👏 Muito bom! Você tem um ótimo conhecimento do assunto!';
+                messageClass = 'good';
+            } else if (percentage >= 60) {
+                message = '📚 Bom trabalho! Estude um pouco mais os tópicos que errou.';
+                messageClass = 'fair';
+            } else {
+                message = '💪 Continue estudando! Releia o guia e tente novamente.';
+                messageClass = 'improve';
+            }
+
+            document.getElementById('messageFeedback').innerHTML = `<div class="message ${messageClass}">${message}</div>`;
+            document.getElementById('progressText').textContent = 'Quiz Completado!';
+            document.getElementById('progressFill').style.width = '100%';
+        }
+
+        // Iniciar quiz
+        initQuiz();
+    </script>
+</body>
+</html>

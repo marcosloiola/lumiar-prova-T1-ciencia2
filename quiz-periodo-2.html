@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Período 2 - Ar e Atmosfera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            font-size: 0.95em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 10px 0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #4ade80;
+            transition: width 0.3s ease;
+        }
+
+        .content {
+            padding: 40px 30px;
+            min-height: 600px;
+        }
+
+        .quiz-intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .quiz-intro h2 {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .quiz-intro p {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .question-box {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question-number {
+            font-size: 0.9em;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .question-number.easy {
+            color: #00b894;
+        }
+
+        .question-number.medium {
+            color: #fdcb6e;
+        }
+
+        .question-number.hard {
+            color: #ff7675;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .alternatives {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .alternative {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.05em;
+        }
+
+        .alternative:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .alternative.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .alternative-letter {
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .alternative.correct .alternative-letter {
+            background: #00b894;
+        }
+
+        .alternative.incorrect .alternative-letter {
+            background: #ff7675;
+        }
+
+        .alternative-text {
+            flex-grow: 1;
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            border-left: 4px solid #00b894;
+            color: #155724;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            border-left: 4px solid #ff7675;
+            color: #721c24;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .feedback-text {
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .correct-answer {
+            background: #d4edda;
+            border-left: 4px solid #00b894;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 10px;
+            color: #155724;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-restart {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+
+        .btn-restart:hover {
+            background: #e0e0e0;
+        }
+
+        .results-container {
+            display: none;
+            text-align: center;
+        }
+
+        .results-container.active {
+            display: block;
+        }
+
+        .results-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 3em;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .score-percentage {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .score-label {
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        .results-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .result-stat {
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .result-stat.correct {
+            background: rgba(0, 184, 148, 0.15);
+            border: 2px solid #00b894;
+        }
+
+        .result-stat.incorrect {
+            background: rgba(255, 118, 117, 0.15);
+            border: 2px solid #ff7675;
+        }
+
+        .result-stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .result-stat.correct .result-stat-number {
+            color: #00b894;
+        }
+
+        .result-stat.incorrect .result-stat-number {
+            color: #ff7675;
+        }
+
+        .result-stat-label {
+            font-size: 1em;
+            color: #666;
+        }
+
+        .results-message {
+            font-size: 1.3em;
+            margin-top: 30px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .results-message.excellent {
+            color: #00b894;
+        }
+
+        .results-message.good {
+            color: #667eea;
+        }
+
+        .results-message.fair {
+            color: #fdcb6e;
+        }
+
+        .results-message.poor {
+            color: #ff7675;
+        }
+
+        footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .difficulty-badge.easy {
+            background: #d4edda;
+            color: #00b894;
+        }
+
+        .difficulty-badge.medium {
+            background: #fff3cd;
+            color: #c49f0d;
+        }
+
+        .difficulty-badge.hard {
+            background: #f8d7da;
+            color: #ff7675;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌬️ Quiz - Ar e Atmosfera 🌍</h1>
+            <p style="font-size: 1.05em; margin-top: 10px;">Período 2 - Teste seus conhecimentos!</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-info">
+                <span id="progressText">Clique em começar para iniciar</span>
+                <span id="progressCount">0/24</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- TELA INICIAL -->
+            <div class="quiz-intro" id="quizIntro">
+                <h2>Bem-vindo ao Quiz!</h2>
+                <p>Você terá 24 perguntas sobre Ar e Atmosfera</p>
+                <p style="font-size: 0.95em; color: #999;">
+                    ✅ 8 perguntas fáceis<br>
+                    🟨 8 perguntas médias<br>
+                    🔴 8 perguntas difíceis
+                </p>
+                <p style="margin-top: 20px; font-size: 0.9em;">Leia com atenção, escolha a melhor resposta e aprenda com o feedback!</p>
+                <button class="start-btn" onclick="startQuiz()">Começar Quiz 🚀</button>
+            </div>
+
+            <!-- CONTAINER DAS QUESTÕES -->
+            <div id="quizContainer"></div>
+
+            <!-- TELA DE RESULTADOS -->
+            <div class="results-container" id="resultsContainer">
+                <h2 style="color: #667eea; margin-bottom: 20px;">Quiz Finalizado! 🎉</h2>
+
+                <div class="results-box">
+                    <div class="score-circle" id="scoreCircle"></div>
+                    <div class="score-percentage" id="scorePercentage"></div>
+                    <div class="score-label">de 24 questões</div>
+                </div>
+
+                <div class="results-details">
+                    <div class="result-stat correct">
+                        <div class="result-stat-number" id="correctCount">0</div>
+                        <div class="result-stat-label">Acertos</div>
+                    </div>
+                    <div class="result-stat incorrect">
+                        <div class="result-stat-number" id="incorrectCount">0</div>
+                        <div class="result-stat-label">Erros</div>
+                    </div>
+                </div>
+
+                <div class="results-message" id="resultMessage"></div>
+
+                <div class="button-group" style="margin-top: 40px;">
+                    <button class="btn btn-restart" onclick="location.reload()">📚 Fazer Novamente</button>
+                    <button class="btn btn-next" onclick="voltarAoGuia()">⬅️ Voltar ao Guia</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>📚 Programa de Estudo - Ciências 2 - Período 2 | Quiz Interativo</p>
+        </footer>
+    </div>
+
+    <script>
+        // BANCO DE QUESTÕES
+        const questions = [
+            // QUESTÕES FÁCEIS (1-8)
+            {
+                id: 1,
+                difficulty: 'easy',
+                question: 'Qual gás é o mais abundante na atmosfera terrestre?',
+                alternatives: [
+                    { letter: 'A', text: 'Oxigênio', correct: false },
+                    { letter: 'B', text: 'Argônio', correct: false },
+                    { letter: 'C', text: 'Nitrogênio (N₂) - compõe 78%', correct: true },
+                    { letter: 'D', text: 'Dióxido de carbono', correct: false }
+                ],
+                explanation: 'O nitrogênio é o gás mais abundante na atmosfera, representando 78% do ar que respiramos.'
+            },
+            {
+                id: 2,
+                difficulty: 'easy',
+                question: 'Qual camada da atmosfera contém a camada de ozônio que nos protege dos raios UV?',
+                alternatives: [
+                    { letter: 'A', text: 'Exosfera', correct: false },
+                    { letter: 'B', text: 'Estratosfera', correct: true },
+                    { letter: 'C', text: 'Termosfera', correct: false },
+                    { letter: 'D', text: 'Troposfera - onde vivemos', correct: false }
+                ],
+                explanation: 'A estratosfera é a camada que contém a camada de ozônio, responsável por filtrar a radiação ultravioleta prejudicial.'
+            },
+            {
+                id: 3,
+                difficulty: 'easy',
+                question: 'Qual é a porcentagem de oxigênio (O₂) na composição do ar?',
+                alternatives: [
+                    { letter: 'A', text: '78%', correct: false },
+                    { letter: 'B', text: '21%', correct: true },
+                    { letter: 'C', text: '1%', correct: false },
+                    { letter: 'D', text: '50%', correct: false }
+                ],
+                explanation: 'O oxigênio representa 21% da atmosfera terrestre, sendo essencial para a respiração de seres vivos.'
+            },
+            {
+                id: 4,
+                difficulty: 'easy',
+                question: 'O ar puro é inodoro, incolor e insípido. O que isso significa?',
+                alternatives: [
+                    { letter: 'A', text: 'Tem cheiro, cor e sabor fortes', correct: false },
+                    { letter: 'B', text: 'Sem cheiro, sem cor e sem sabor', correct: true },
+                    { letter: 'C', text: 'Tem cheiro, mas não tem cor', correct: false },
+                    { letter: 'D', text: 'Tem sabor adocicado e cor branca', correct: false }
+                ],
+                explanation: 'Inodoro significa sem cheiro, incolor sem cor, e insípido sem sabor. Essas são propriedades do ar puro.'
+            },
+            {
+                id: 5,
+                difficulty: 'easy',
+                question: 'Qual é o valor da pressão atmosférica ao nível do mar?',
+                alternatives: [
+                    { letter: 'A', text: '500 mmHg', correct: false },
+                    { letter: 'B', text: '1 atm = 760 mmHg', correct: true },
+                    { letter: 'C', text: '100 mmHg', correct: false },
+                    { letter: 'D', text: '1000 mmHg', correct: false }
+                ],
+                explanation: 'A pressão atmosférica ao nível do mar é de 1 atmosfera (1 atm), equivalente a 760 milímetros de mercúrio (mmHg).'
+            },
+            {
+                id: 6,
+                difficulty: 'easy',
+                question: 'O que acontece com a pressão atmosférica quando você sobe uma montanha?',
+                alternatives: [
+                    { letter: 'A', text: 'Aumenta', correct: false },
+                    { letter: 'B', text: 'Permanece igual', correct: false },
+                    { letter: 'C', text: 'Diminui', correct: true },
+                    { letter: 'D', text: 'Varia sem padrão definido', correct: false }
+                ],
+                explanation: 'Quando subimos uma montanha, há menos ar acima de nós, portanto a pressão atmosférica diminui.'
+            },
+            {
+                id: 7,
+                difficulty: 'easy',
+                question: 'Qual gás, quando em alta concentração, é muito perigoso pois se liga à hemoglobina impedindo o transporte de oxigênio?',
+                alternatives: [
+                    { letter: 'A', text: 'Dióxido de carbono', correct: false },
+                    { letter: 'B', text: 'Monóxido de carbono (CO)', correct: true },
+                    { letter: 'C', text: 'Nitrogênio', correct: false },
+                    { letter: 'D', text: 'Ozônio estratosférico', correct: false }
+                ],
+                explanation: 'O monóxido de carbono é incolor, inodoro e extremamente perigoso porque se liga à hemoglobina, impedindo o transporte de oxigênio no corpo.'
+            },
+            {
+                id: 8,
+                difficulty: 'easy',
+                question: 'Qual processo biológico produz oxigênio e consome dióxido de carbono?',
+                alternatives: [
+                    { letter: 'A', text: 'Respiração celular', correct: false },
+                    { letter: 'B', text: 'Decomposição', correct: false },
+                    { letter: 'C', text: 'Combustão', correct: false },
+                    { letter: 'D', text: 'Fotossíntese', correct: true }
+                ],
+                explanation: 'A fotossíntese é realizada por plantas e algas, produzindo oxigênio (O₂) e consumindo dióxido de carbono (CO₂).'
+            },
+
+            // QUESTÕES MÉDIAS (9-16)
+            {
+                id: 9,
+                difficulty: 'medium',
+                question: 'Quais são as 5 camadas da atmosfera, em ordem do nível do mar para cima?',
+                alternatives: [
+                    { letter: 'A', text: 'Troposfera, Estratosfera, Mesosfera, Termosfera, Exosfera', correct: true },
+                    { letter: 'B', text: 'Estratosfera, Troposfera, Mesosfera, Exosfera, Termosfera', correct: false },
+                    { letter: 'C', text: 'Termosfera, Mesosfera, Estratosfera, Troposfera, Exosfera', correct: false },
+                    { letter: 'D', text: 'Exosfera, Termosfera, Mesosfera, Estratosfera, Troposfera', correct: false }
+                ],
+                explanation: 'A ordem correta, de baixo para cima, é: Troposfera (onde vivemos), Estratosfera (com o ozônio), Mesosfera (onde meteoros se queimam), Termosfera (muito quente) e Exosfera (limite do espaço).'
+            },
+            {
+                id: 10,
+                difficulty: 'medium',
+                question: 'O que são gases nobres e qual é a sua principal característica?',
+                alternatives: [
+                    { letter: 'A', text: 'Gases que reagem facilmente com outras substâncias', correct: false },
+                    { letter: 'B', text: 'Incluem nitrogênio e oxigênio', correct: false },
+                    { letter: 'C', text: 'Gases que não reagem quimicamente - são muito estáveis', correct: true },
+                    { letter: 'D', text: 'Gases produzidos apenas na estratosfera', correct: false }
+                ],
+                explanation: 'Gases nobres (argônio, neônio, hélio, etc.) não reagem quimicamente com outras substâncias, tornando-os muito estáveis e inertes.'
+            },
+            {
+                id: 11,
+                difficulty: 'medium',
+                question: 'O que é chuva ácida e quais poluentes atmosféricos a causam?',
+                alternatives: [
+                    { letter: 'A', text: 'Chuva que cai apenas em dias muito quentes e é causada por excesso de ozônio', correct: false },
+                    { letter: 'B', text: 'Chuva formada quando óxidos de nitrogênio e enxofre reagem com umidade', correct: true },
+                    { letter: 'C', text: 'Chuva que ocorre na estratosfera e protege de raios UV', correct: false },
+                    { letter: 'D', text: 'Um tipo de chuva com sabor amargo produzida por plantas', correct: false }
+                ],
+                explanation: 'Chuva ácida é formada quando óxidos de nitrogênio (NOx) e enxofre (SOx) reagem com umidade na atmosfera, criando ácido nítrico e sulfúrico.'
+            },
+            {
+                id: 12,
+                difficulty: 'medium',
+                question: 'Qual é a diferença entre o ozônio (O₃) na estratosfera e na troposfera?',
+                alternatives: [
+                    { letter: 'A', text: 'O ozônio é prejudicial em ambas as camadas', correct: false },
+                    { letter: 'B', text: 'Na estratosfera é benéfico (filtra UV), na troposfera é prejudicial (poluente)', correct: true },
+                    { letter: 'C', text: 'Existe ozônio apenas na estratosfera', correct: false },
+                    { letter: 'D', text: 'Na troposfera o ozônio é benéfico e na estratosfera é prejudicial', correct: false }
+                ],
+                explanation: 'O ozônio estratosférico nos protege de radiação UV prejudicial, enquanto o ozônio troposférico é um poluente que causa problemas respiratórios.'
+            },
+            {
+                id: 13,
+                difficulty: 'medium',
+                question: 'Descreva o experimento de Torricelli (1643) e o que ele comprovou.',
+                alternatives: [
+                    { letter: 'A', text: 'Colocou uma coluna de mercúrio em um tubo, criando o barômetro, comprovando a pressão atmosférica', correct: true },
+                    { letter: 'B', text: 'Mostrou que o ar não tem peso fazendo um vácuo', correct: false },
+                    { letter: 'C', text: 'Provou que o nitrogênio é mais abundante que o oxigênio', correct: false },
+                    { letter: 'D', text: 'Demonstrou que a fotossíntese produz ozônio na estratosfera', correct: false }
+                ],
+                explanation: 'Torricelli inverteu um tubo cheio de mercúrio em um recipiente e viu que uma coluna de 76 cm permanecia suspensa, provando assim a existência da pressão atmosférica.'
+            },
+            {
+                id: 14,
+                difficulty: 'medium',
+                question: 'Qual propriedade do ar explica por que um aspirador de pó consegue sugar a poeira?',
+                alternatives: [
+                    { letter: 'A', text: 'A elasticidade do ar', correct: false },
+                    { letter: 'B', text: 'O aspirador cria uma região de baixa pressão que suga poeira do ambiente', correct: true },
+                    { letter: 'C', text: 'A massa do ar aumenta dentro do aspirador', correct: false },
+                    { letter: 'D', text: 'O ar perde sua capacidade de expansão', correct: false }
+                ],
+                explanation: 'O aspirador cria uma zona de baixa pressão no interior. Como o ar flui de alta pressão (ambiente) para baixa pressão (aspirador), a poeira é sugada.'
+            },
+            {
+                id: 15,
+                difficulty: 'medium',
+                question: 'Por que o ciclo do nitrogênio é importante para os seres vivos?',
+                alternatives: [
+                    { letter: 'A', text: 'Porque o nitrogênio é mais abundante na atmosfera', correct: false },
+                    { letter: 'B', text: 'Porque transforma N₂ em formas que plantas podem absorver para crescer', correct: true },
+                    { letter: 'C', text: 'Porque produz oxigênio através da fotossíntese', correct: false },
+                    { letter: 'D', text: 'Porque mantém a camada de ozônio intacta', correct: false }
+                ],
+                explanation: 'Embora o nitrogênio seja abundante na atmosfera, a maioria dos seres vivos não consegue absorvê-lo diretamente. O ciclo do nitrogênio, através de bactérias, converte N₂ em formas que as plantas podem usar.'
+            },
+            {
+                id: 16,
+                difficulty: 'medium',
+                question: 'Quais destes processos CONSOMEM oxigênio na natureza?',
+                alternatives: [
+                    { letter: 'A', text: 'Apenas respiração celular', correct: false },
+                    { letter: 'B', text: 'Respiração celular, decomposição, oxidação e combustão', correct: true },
+                    { letter: 'C', text: 'Apenas fotossíntese', correct: false },
+                    { letter: 'D', text: 'Apenas combustão de combustíveis fósseis', correct: false }
+                ],
+                explanation: 'Vários processos consomem oxigênio: respiração celular (seres vivos), decomposição (bactérias), oxidação (ferrugem) e combustão (queima).'
+            },
+
+            // QUESTÕES DIFÍCEIS (17-24)
+            {
+                id: 17,
+                difficulty: 'hard',
+                question: 'Por que o nitrogênio atmosférico (N₂) não pode ser diretamente absorvido pela maioria dos seres vivos?',
+                alternatives: [
+                    { letter: 'A', text: 'Porque a molécula de N₂ é muito estável e não pode ser quebrada por enzimas convencionais dos organismos', correct: true },
+                    { letter: 'B', text: 'Porque o nitrogênio é tóxico para todos os seres vivos', correct: false },
+                    { letter: 'C', text: 'Porque o nitrogênio fica preso na estratosfera', correct: false },
+                    { letter: 'D', text: 'Porque as plantas preferem absorver apenas oxigênio', correct: false }
+                ],
+                explanation: 'O N₂ é uma molécula muito estável com uma ligação tripla muito forte. A maioria dos organismos não consegue quebrar essa ligação sem ajuda de bactérias especializadas.'
+            },
+            {
+                id: 18,
+                difficulty: 'hard',
+                question: 'Explique o mutualismo entre as bactérias Rhizobium e as plantas leguminosas.',
+                alternatives: [
+                    { letter: 'A', text: 'As bactérias comem as raízes da planta e a planta as expulsa', correct: false },
+                    { letter: 'B', text: 'As bactérias vivem em nódulos nas raízes, ganham açúcares da planta e a planta ganha nitrogênio fixado', correct: true },
+                    { letter: 'C', text: 'As plantas produzem oxigênio e as bactérias produzem dióxido de carbono', correct: false },
+                    { letter: 'D', text: 'É um tipo de parasitismo onde a bactéria prejudica a planta', correct: false }
+                ],
+                explanation: 'É uma relação simbiótica benéfica: bactérias Rhizobium vivem em nódulos nas raízes de leguminosas (feijão, soja), recebem açúcares da planta e fixam N₂ para ela usar.'
+            },
+            {
+                id: 19,
+                difficulty: 'hard',
+                question: 'Compare as etapas de fixação e desnitrificação no ciclo do nitrogênio.',
+                alternatives: [
+                    { letter: 'A', text: 'Fixação transforma N₂ em amônia, desnitrificação transforma nitrato de volta em N₂', correct: true },
+                    { letter: 'B', text: 'São processos idênticos que ocorrem no mesmo lugar', correct: false },
+                    { letter: 'C', text: 'Fixação consome oxigênio, desnitrificação produz oxigênio', correct: false },
+                    { letter: 'D', text: 'A desnitrificação só ocorre nas plantas, não no solo', correct: false }
+                ],
+                explanation: 'Fixação converte N₂ em amônia (NH₃) tornando-a disponível para plantas. Desnitrificação é o processo oposto, convertendo nitrato de volta em N₂ que retorna à atmosfera.'
+            },
+            {
+                id: 20,
+                difficulty: 'hard',
+                question: 'Por que a combustão consome oxigênio e qual é um exemplo cotidiano?',
+                alternatives: [
+                    { letter: 'A', text: 'Combust. é uma reação oxidação onde o combustível se une ao O₂ liberando energia; ex: vela acesa', correct: true },
+                    { letter: 'B', text: 'A combustão não consome oxigênio, apenas produz dióxido de carbono', correct: false },
+                    { letter: 'C', text: 'O combustível absorve oxigênio do solo', correct: false },
+                    { letter: 'D', text: 'A combustão usa ozônio da estratosfera, não oxigênio comum', correct: false }
+                ],
+                explanation: 'Combustão é uma reação química onde um combustível reage com oxigênio (O₂), liberando energia na forma de calor e luz. Exemplos: vela acesa, queimador do fogão, carro em movimento.'
+            },
+            {
+                id: 21,
+                difficulty: 'hard',
+                question: 'Qual a relação entre altitude e pressão atmosférica? Como isso afeta o corpo humano?',
+                alternatives: [
+                    { letter: 'A', text: 'Maior altitude = menor pressão. Menos ar causa menos oxigênio disponível, afetando respiração', correct: true },
+                    { letter: 'B', text: 'Maior altitude = maior pressão e mais oxigênio', correct: false },
+                    { letter: 'C', text: 'A altitude não afeta a pressão atmosférica', correct: false },
+                    { letter: 'D', text: 'Apenas a temperatura afeta a pressão, não a altitude', correct: false }
+                ],
+                explanation: 'À medida que subimos, há menos ar acima de nós, portanto a pressão diminui. Isso reduz a quantidade de oxigênio disponível, causando fadiga, tontura e possível mal da montanha.'
+            },
+            {
+                id: 22,
+                difficulty: 'hard',
+                question: 'Como o monóxido de carbono (CO) age no organismo e por que é tão perigoso?',
+                alternatives: [
+                    { letter: 'A', text: 'CO se liga à hemoglobina com mais força que o O₂, impedindo o transporte de oxigênio', correct: true },
+                    { letter: 'B', text: 'CO dilata os vasos sanguíneos causando vazamento', correct: false },
+                    { letter: 'C', text: 'CO é facilmente expelido pelos pulmões sem efeito', correct: false },
+                    { letter: 'D', text: 'CO dissolve no sangue e vira oxigênio', correct: false }
+                ],
+                explanation: 'O monóxido de carbono tem uma afinidade muito maior pela hemoglobina do que o oxigênio. Uma vez ligado, bloqueia o transporte de O₂, causando asfixia celular mesmo se houver ar disponível.'
+            },
+            {
+                id: 23,
+                difficulty: 'hard',
+                question: 'Por que o material particulado (MP) é considerado um poluente prejudicial à saúde?',
+                alternatives: [
+                    { letter: 'A', text: 'Porque partículas muito pequenas penetram profundamente nos pulmões causando inflamação e doenças respiratórias', correct: true },
+                    { letter: 'B', text: 'Porque aumenta a pressão atmosférica', correct: false },
+                    { letter: 'C', text: 'Porque mata as plantas através da fotossíntese', correct: false },
+                    { letter: 'D', text: 'Porque é composto apenas de poeira visível', correct: false }
+                ],
+                explanation: 'Material particulado inclui fuligem, pólen e poeira muito fina que conseguem penetrar profundamente nos pulmões (bronquíolos e alvéolos), causando inflamação, bronquite e asma.'
+            },
+            {
+                id: 24,
+                difficulty: 'hard',
+                question: 'Como o aumento de poluentes atmosféricos afeta o ciclo do oxigênio na natureza?',
+                alternatives: [
+                    { letter: 'A', text: 'Reduz fotossíntese em plantas e algas enquanto aumenta consumo por decomposição e combustão', correct: true },
+                    { letter: 'B', text: 'Aumenta a produção de O₂ na estratosfera', correct: false },
+                    { letter: 'C', text: 'Poluentes não têm nenhum efeito no ciclo do oxigênio', correct: false },
+                    { letter: 'D', text: 'Favorece a fotossíntese e reduz a respiração celular', correct: false }
+                ],
+                explanation: 'Poluentes como partículas e gases prejudicam as plantas (reduzem fotossíntese/produção de O₂), enquanto a combustão de combustíveis fósseis consome muito oxigênio. Isso desequilibra o ciclo.'
+            }
+        ];
+
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let answered = false;
+        let selectedAlternative = null;
+
+        function startQuiz() {
+            document.getElementById('quizIntro').style.display = 'none';
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.getElementById('quizContainer');
+
+            let html = `
+                <div class="question-container active">
+                    <div class="question-box">
+                        <div class="question-number ${question.difficulty}">
+                            Questão ${question.id} de 24
+                            <span class="difficulty-badge ${question.difficulty}">
+                                ${question.difficulty === 'easy' ? 'Fácil' : question.difficulty === 'medium' ? 'Médio' : 'Difícil'}
+                            </span>
+                        </div>
+                        <div class="question-text">${question.question}</div>
+                        <div class="alternatives" id="alternatives">
+            `;
+
+            question.alternatives.forEach((alt, index) => {
+                html += `
+                    <div class="alternative ${answered ? (alt.correct ? 'correct' : 'incorrect') : ''}"
+                         onclick="selectAlternative(${index})"
+                         ${answered ? 'style="pointer-events: none;"' : ''}>
+                        <div class="alternative-letter">${alt.letter}</div>
+                        <div class="alternative-text">${alt.text}</div>
+                    </div>
+                `;
+            });
+
+            html += `
+                        </div>
+                        <div class="feedback ${answered ? 'show' : ''}" id="feedback">
+                            <div class="feedback-title" id="feedbackTitle"></div>
+                            <div class="feedback-text" id="feedbackText"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+            updateProgress();
+        }
+
+        function selectAlternative(index) {
+            if (answered) return;
+
+            answered = true;
+            selectedAlternative = index;
+            const question = questions[currentQuestion];
+            const alternatives = document.querySelectorAll('.alternative');
+
+            if (question.alternatives[index].correct) {
+                correctAnswers++;
+                alternatives[index].classList.add('correct');
+
+                const feedback = document.getElementById('feedback');
+                const feedbackTitle = document.getElementById('feedbackTitle');
+                const feedbackText = document.getElementById('feedbackText');
+
+                feedbackTitle.textContent = '✅ Resposta Correta!';
+                feedbackText.innerHTML = `<strong>Explicação:</strong> ${question.explanation}`;
+                feedback.classList.add('correct');
+                feedback.classList.remove('incorrect');
+            } else {
+                alternatives[index].classList.add('incorrect');
+
+                const correctIndex = question.alternatives.findIndex(alt => alt.correct);
+                alternatives[correctIndex].classList.add('correct');
+
+                const feedback = document.getElementById('feedback');
+                const feedbackTitle = document.getElementById('feedbackTitle');
+                const feedbackText = document.getElementById('feedbackText');
+
+                feedbackTitle.textContent = '❌ Resposta Incorreta';
+                feedbackText.innerHTML = `
+                    <strong>Resposta Correta:</strong> ${question.alternatives[correctIndex].text}<br><br>
+                    <strong>Explicação:</strong> ${question.explanation}
+                `;
+                feedback.classList.add('incorrect');
+                feedback.classList.remove('correct');
+            }
+
+            document.getElementById('feedback').classList.add('show');
+            updateProgress();
+        }
+
+        function nextQuestion() {
+            if (!answered) {
+                alert('Selecione uma alternativa antes de continuar!');
+                return;
+            }
+
+            currentQuestion++;
+            answered = false;
+            selectedAlternative = null;
+
+            if (currentQuestion < questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const percentage = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent =
+                `Questão ${currentQuestion + 1} - ${questions[currentQuestion].difficulty === 'easy' ? '✅ Fácil' : questions[currentQuestion].difficulty === 'medium' ? '🟨 Médio' : '🔴 Difícil'}`;
+            document.getElementById('progressCount').textContent = `${currentQuestion + 1}/${questions.length}`;
+        }
+
+        function showResults() {
+            document.getElementById('quizContainer').innerHTML = '';
+            document.getElementById('resultsContainer').classList.add('active');
+
+            const percentage = Math.round((correctAnswers / questions.length) * 100);
+            const incorrect = questions.length - correctAnswers;
+
+            document.getElementById('scoreCircle').innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 0.6em; font-weight: normal; margin-bottom: 5px;">Sua Nota</div>
+                    <div>${correctAnswers}/24</div>
+                </div>
+            `;
+
+            document.getElementById('scorePercentage').textContent = `${percentage}%`;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('incorrectCount').textContent = incorrect;
+
+            let message = '';
+            let messageClass = '';
+
+            if (percentage >= 90) {
+                message = '🌟 Excelente! Você domina o conteúdo!';
+                messageClass = 'excellent';
+            } else if (percentage >= 75) {
+                message = '👏 Muito bom! Continue estudando!';
+                messageClass = 'good';
+            } else if (percentage >= 60) {
+                message = '📚 Bom esforço! Revise o conteúdo.';
+                messageClass = 'fair';
+            } else {
+                message = '💪 Continue praticando! Você consegue!';
+                messageClass = 'poor';
+            }
+
+            const resultMessage = document.getElementById('resultMessage');
+            resultMessage.textContent = message;
+            resultMessage.classList.add(messageClass);
+        }
+
+        function voltarAoGuia() {
+            window.location.href = 'guia-periodo-2.html';
+        }
+
+        // Renderizar primeira questão ao carregar
+        window.addEventListener('load', function() {
+            // Apenas a tela de intro está visível inicialmente
+        });
+
+        // Adicionar listener para o botão próxima questão dinamicamente
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && answered && currentQuestion < questions.length - 1) {
+                nextQuestion();
+            }
+        });
+    </script>
+
+    <!-- Botão de Próxima Questão (adicionado após renderização) -->
+    <script>
+        function addNextButton() {
+            const container = document.getElementById('quizContainer');
+            if (!container.querySelector('.button-group')) {
+                const buttonGroup = document.createElement('div');
+                buttonGroup.className = 'button-group';
+                buttonGroup.innerHTML = `
+                    <button class="btn btn-next" onclick="nextQuestion()" id="nextBtn">
+                        ${currentQuestion < questions.length - 1 ? 'Próxima Questão ➡️' : 'Ver Resultados 🎯'}
+                    </button>
+                `;
+                container.appendChild(buttonGroup);
+            }
+        }
+
+        const originalRender = renderQuestion;
+        renderQuestion = function() {
+            originalRender();
+            setTimeout(addNextButton, 100);
+        };
+    </script>
+</body>
+</html>

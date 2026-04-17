@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Estudo - Ciências 2 - Período 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header .periodo-info {
+            font-size: 1.2em;
+            opacity: 0.95;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.3);
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            height: 100%;
+            width: 33.33%;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { width: 0; }
+            to { width: 33.33%; }
+        }
+
+        .tema-banner {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .conteudo-wrapper {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-left: 6px solid #667eea;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card.tempo-geologico {
+            border-left-color: #f59e0b;
+        }
+
+        .card.tempo-geologico h2 {
+            color: #f59e0b;
+        }
+
+        .card.extincoes {
+            border-left-color: #ef4444;
+        }
+
+        .card.extincoes h2 {
+            color: #ef4444;
+        }
+
+        .card.deriva {
+            border-left-color: #06b6d4;
+        }
+
+        .card.deriva h2 {
+            color: #06b6d4;
+        }
+
+        .card.tectonica {
+            border-left-color: #8b5cf6;
+        }
+
+        .card.tectonica h2 {
+            color: #8b5cf6;
+        }
+
+        .card.terremotos {
+            border-left-color: #ec4899;
+        }
+
+        .card.terremotos h2 {
+            color: #ec4899;
+        }
+
+        .card.vulcanismo {
+            border-left-color: #ea580c;
+        }
+
+        .card.vulcanismo h2 {
+            color: #ea580c;
+        }
+
+        .card.circulo-fogo {
+            border-left-color: #dc2626;
+        }
+
+        .card.circulo-fogo h2 {
+            color: #dc2626;
+        }
+
+        .card p {
+            line-height: 1.8;
+            margin-bottom: 12px;
+            color: #555;
+        }
+
+        .card ul, .card ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .card li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .destaque {
+            background: linear-gradient(120deg, #fef3c7, #fde047);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #92400e;
+        }
+
+        .destaque.vermelho {
+            background: linear-gradient(120deg, #fecaca, #fca5a5);
+            color: #7f1d1d;
+        }
+
+        .destaque.azul {
+            background: linear-gradient(120deg, #bfdbfe, #93c5fd);
+            color: #1e40af;
+        }
+
+        .destaque.roxo {
+            background: linear-gradient(120deg, #ddd6fe, #c4b5fd);
+            color: #5b21b6;
+        }
+
+        .destaque.verde {
+            background: linear-gradient(120deg, #bbf7d0, #86efac);
+            color: #15803d;
+        }
+
+        .destaque.laranja {
+            background: linear-gradient(120deg, #fed7aa, #fdba74);
+            color: #92400e;
+        }
+
+        .tabela-extincoes {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .tabela-extincoes thead {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .tabela-extincoes th {
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .tabela-extincoes td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tabela-extincoes tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tabela-extincoes tbody tr:nth-child(odd) {
+            background: #fafafa;
+        }
+
+        .tabela-extincoes tbody tr:hover {
+            background: #f3f4f6;
+        }
+
+        .emoji-icon {
+            font-size: 1.5em;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-left: 4px solid #0ea5e9;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            color: #0c4a6e;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-quiz {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            margin-top: 15px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-quiz:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-quiz:active {
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .card h2 {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ciências 2 - Geologia e Fenômenos Naturais</h1>
+            <div class="periodo-info">📚 Período 1 de 3</div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </header>
+
+        <div class="tema-banner">
+            🌍 TEMA: GEOLOGIA E FENÔMENOS NATURAIS 🌋⛰️
+        </div>
+
+        <div class="conteudo-wrapper">
+            <!-- Card 1: Tempo Geológico -->
+            <div class="card tempo-geologico">
+                <h2><span class="emoji-icon">⏰</span> 1. Tempo Geológico</h2>
+                <p>A <span class="destaque azul">Terra tem aproximadamente 4,5 bilhões de anos</span>. Para estudar tamanha dimensão de tempo, os cientistas dividiram a história do nosso planeta em intervalos menores:</p>
+                <ul>
+                    <li><span class="destaque">Éons</span> (maior unidade)</li>
+                    <li><span class="destaque">Eras</span></li>
+                    <li><span class="destaque">Períodos</span></li>
+                    <li><span class="destaque">Épocas</span> (menor unidade)</li>
+                </ul>
+                <div class="info-box">
+                    💡 <strong>Dica importante:</strong> Os <span class="destaque">fósseis</span> são peças fundamentais para que os cientistas consigam datar e entender as diferentes eras geológicas!
+                </div>
+            </div>
+
+            <!-- Card 2: Extinções em Massa -->
+            <div class="card extincoes">
+                <h2><span class="emoji-icon">💀</span> 2. As 5 Grandes Extinções em Massa</h2>
+                <p>Ao longo da história da Terra, houve <span class="destaque vermelho">5 extinções em massa</span> que eliminaram uma grande quantidade de espécies. Veja a tabela abaixo:</p>
+
+                <table class="tabela-extincoes">
+                    <thead>
+                        <tr>
+                            <th>Período</th>
+                            <th>Há quantos anos</th>
+                            <th>Espécies extintas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Ordoviciano-Siluriano</strong></td>
+                            <td>~440 milhões</td>
+                            <td>85%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Devoniano</strong></td>
+                            <td>~370 milhões</td>
+                            <td>70-80%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Permiano-Triássico</strong> ⚠️</td>
+                            <td>~250 milhões</td>
+                            <td><strong>95%</strong> (A MAIOR!)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Triássico-Jurássico</strong></td>
+                            <td>~200 milhões</td>
+                            <td>75%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cretáceo-Paleógeno</strong></td>
+                            <td>~65 milhões</td>
+                            <td>Dinossauros (provável causa: asteroide)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>Curiosidade:</strong> A extinção do <span class="destaque vermelho">Permiano-Triássico</span> foi tão devastadora que é conhecida como "A Grande Morte" — eliminou 95% de todas as espécies da Terra!</p>
+            </div>
+
+            <!-- Card 3: Deriva Continental e Pangeia -->
+            <div class="card deriva">
+                <h2><span class="emoji-icon">🌏</span> 3. Deriva Continental e Pangeia</h2>
+                <p>Há muito tempo, todos os continentes formavam um único supercontinente gigante chamado <span class="destaque azul">Pangeia</span>, que existiu entre <span class="destaque azul">335 e 200 milhões de anos atrás</span>.</p>
+
+                <p>A <span class="destaque azul">Pangeia se dividiu em dois supercontinentes</span>:</p>
+                <ul>
+                    <li><strong>Gondwana</strong> (continentes do sul)</li>
+                    <li><strong>Laurásia</strong> (continentes do norte)</li>
+                </ul>
+
+                <p>Essa ideia foi proposta por <span class="destaque">Alfred Wegener em 1915</span>, na chamada <span class="destaque">Teoria da Deriva Continental</span>.</p>
+
+                <p><strong>Que evidências suportam essa teoria?</strong></p>
+                <ul>
+                    <li>📐 O <strong>encaixe dos continentes</strong> — se você colocar num mapa, parecem peças de um quebra-cabeça!</li>
+                    <li>🦴 <strong>Fósseis iguais</strong> em continentes separados (ex: mesmos dinossauros na América do Sul e África)</li>
+                    <li>🪨 <strong>Rochas similares</strong> encontradas em continentes que estavam próximos</li>
+                </ul>
+            </div>
+
+            <!-- Card 4: Tectônica de Placas -->
+            <div class="card tectonica">
+                <h2><span class="emoji-icon">⚙️</span> 4. Tectônica de Placas</h2>
+                <p>A <span class="destaque roxo">crosta terrestre é dividida em 15 grandes placas tectônicas</span> (e aproximadamente 40 placas menores).</p>
+
+                <div class="info-box">
+                    🔥 <strong>O que faz as placas se moverem?</strong> As <span class="destaque roxo">correntes de convecção do manto</span> (a camada quente abaixo da crosta) empurram as placas. Elas se movem de <span class="destaque roxo">1 a 10 cm por ano</span>.
+                </div>
+
+                <p><strong>3 tipos de limites entre placas:</strong></p>
+                <ol>
+                    <li>
+                        <span class="destaque roxo">Transformante/Conservativo</span><br>
+                        As placas deslizam lateralmente uma sobre a outra → Criam <strong>falhas geológicas</strong>
+                    </li>
+                    <li>
+                        <span class="destaque roxo">Divergente/Construtivo</span><br>
+                        As placas se <strong>afastam</strong> → Formam <strong>dorsais oceânicas</strong> e novo assoalho oceânico
+                    </li>
+                    <li>
+                        <span class="destaque roxo">Convergente/Destrutivo</span><br>
+                        As placas se <strong>chocam</strong> → Uma desce sob a outra (subducção) → Formam <strong>montanhas e fossas oceânicas</strong>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Card 5: Terremotos -->
+            <div class="card terremotos">
+                <h2><span class="emoji-icon">📍</span> 5. Terremotos (Sismos)</h2>
+                <p>Terremotos são tremores violentos da crosta terrestre, geralmente causados pelo movimento das placas tectônicas.</p>
+
+                <p><strong>Conceitos importantes:</strong></p>
+                <ul>
+                    <li><span class="destaque">Hipocentro</span> → O ponto de <strong>origem do terremoto</strong> no interior da Terra</li>
+                    <li><span class="destaque">Epicentro</span> → O ponto na <strong>superfície acima do hipocentro</strong>, onde o impacto é maior</li>
+                </ul>
+
+                <p><strong>Tipos de ondas sísmicas:</strong></p>
+                <ul>
+                    <li><strong>Ondas primárias (P)</strong> — As mais rápidas, chegam primeiro</li>
+                    <li><strong>Ondas secundárias (S)</strong> — Mais lentas que as P</li>
+                    <li><strong>Ondas superficiais</strong> — Causam a maior destruição</li>
+                </ul>
+
+                <p>A <span class="destaque">Escala Richter</span> é usada para medir a <strong>magnitude</strong> (energia liberada) de um terremoto.</p>
+
+                <div class="info-box">
+                    🌊 <strong>Tsunami:</strong> Ondas gigantes causadas por terremotos <strong>submarinos</strong>. Podem atravessar oceanos inteiros!
+                </div>
+            </div>
+
+            <!-- Card 6: Vulcanismo -->
+            <div class="card vulcanismo">
+                <h2><span class="emoji-icon">🌋</span> 6. Vulcanismo</h2>
+                <p>Vulcanismo é a atividade relacionada ao magma (rocha derretida) que sai do interior da Terra.</p>
+
+                <p><strong>Dois tipos de vulcanismo:</strong></p>
+                <ul>
+                    <li>
+                        <span class="destaque laranja">Vulcanismo primário</span><br>
+                        <strong>Erupções vulcânicas</strong> — o magma sai como <strong>lava</strong> na superfície
+                    </li>
+                    <li>
+                        <span class="destaque laranja">Vulcanismo secundário</span><br>
+                        Atividades posteriores: <strong>gêiseres</strong>, <strong>fontes termais</strong>, <strong>fumarolas</strong>
+                    </li>
+                </ul>
+
+                <p><strong>Tipos de vulcões:</strong></p>
+                <ul>
+                    <li><strong>Explosivos</strong> — Magma viscoso (mais espesso) → erupções violentas</li>
+                    <li><strong>Efusivos</strong> — Magma fluido (mais líquido) → lava flui lentamente</li>
+                </ul>
+            </div>
+
+            <!-- Card 7: Círculo de Fogo -->
+            <div class="card circulo-fogo">
+                <h2><span class="emoji-icon">🔥</span> 7. Círculo de Fogo do Pacífico</h2>
+                <p>O <span class="destaque vermelho">Círculo de Fogo do Pacífico</span> é uma região ao redor do <strong>Oceano Pacífico</strong> com intensíssima atividade geológica.</p>
+
+                <p><strong>Dados impressionantes:</strong></p>
+                <ul>
+                    <li>🌋 <strong>60%</strong> de todos os vulcões ativos do mundo estão lá</li>
+                    <li>📍 <strong>90%</strong> da atividade sísmica global ocorre no Círculo de Fogo</li>
+                </ul>
+
+                <p><strong>E o Brasil?</strong></p>
+                <div class="info-box">
+                    🇧🇷 O Brasil está localizado no <strong>centro da Placa Sul-Americana</strong>, bem <strong>longe das bordas</strong> (onde ocorrem os fenômenos). Por isso:<br><br>
+                    ✓ <strong>Poucos terremotos</strong> de grande magnitude<br>
+                    ✓ <strong>Pouca atividade vulcânica</strong><br>
+                    ⚠️ Último vulcanismo há aproximadamente <strong>80 milhões de anos</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <h3>Pronto para testar seus conhecimentos?</h3>
+            <p style="margin: 15px 0; color: #666;">Responda as 24 questões do Quiz do Período 1 para consolidar seu aprendizado!</p>
+            <a href="quiz-periodo-1.html" class="btn-quiz">▶️ Começar Quiz Período 1</a>
+        </div>
+    </div>
+</body>
+</html>

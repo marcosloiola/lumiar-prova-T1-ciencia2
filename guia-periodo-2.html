@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Estudo - Período 2 - Ar e Atmosfera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            margin-top: 15px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 66.66%;
+            background: #4ade80;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                width: 0;
+            }
+            to {
+                width: 66.66%;
+            }
+        }
+
+        .progress-text {
+            font-size: 0.9em;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .section-card {
+            background: white;
+            border-left: 5px solid;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-1 {
+            border-color: #ff6b6b;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.05) 0%, transparent 100%);
+        }
+
+        .section-2 {
+            border-color: #4ecdc4;
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.05) 0%, transparent 100%);
+        }
+
+        .section-3 {
+            border-color: #ffd93d;
+            background: linear-gradient(135deg, rgba(255, 217, 61, 0.05) 0%, transparent 100%);
+        }
+
+        .section-4 {
+            border-color: #6c5ce7;
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.05) 0%, transparent 100%);
+        }
+
+        .section-5 {
+            border-color: #a29bfe;
+            background: linear-gradient(135deg, rgba(162, 155, 254, 0.05) 0%, transparent 100%);
+        }
+
+        .section-6 {
+            border-color: #00b894;
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.05) 0%, transparent 100%);
+        }
+
+        .section-7 {
+            border-color: #ff7675;
+            background: linear-gradient(135deg, rgba(255, 118, 117, 0.05) 0%, transparent 100%);
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            font-size: 1.5em;
+        }
+
+        .section-1 .section-title {
+            color: #ff6b6b;
+        }
+
+        .section-2 .section-title {
+            color: #4ecdc4;
+        }
+
+        .section-3 .section-title {
+            color: #ffd93d;
+        }
+
+        .section-4 .section-title {
+            color: #6c5ce7;
+        }
+
+        .section-5 .section-title {
+            color: #a29bfe;
+        }
+
+        .section-6 .section-title {
+            color: #00b894;
+        }
+
+        .section-7 .section-title {
+            color: #ff7675;
+        }
+
+        .text-highlight {
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .section-1 .text-highlight {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+
+        .section-2 .text-highlight {
+            background: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+        }
+
+        .section-3 .text-highlight {
+            background: rgba(255, 217, 61, 0.2);
+            color: #c49f0d;
+        }
+
+        .section-4 .text-highlight {
+            background: rgba(108, 92, 231, 0.2);
+            color: #6c5ce7;
+        }
+
+        .section-5 .text-highlight {
+            background: rgba(162, 155, 254, 0.2);
+            color: #a29bfe;
+        }
+
+        .section-6 .text-highlight {
+            background: rgba(0, 184, 148, 0.2);
+            color: #00b894;
+        }
+
+        .section-7 .text-highlight {
+            background: rgba(255, 118, 117, 0.2);
+            color: #ff7675;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .diagram {
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+
+        .info-box strong {
+            color: #667eea;
+        }
+
+        footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌬️ Ar e Atmosfera 🌍</h1>
+            <p style="font-size: 1.1em; margin-top: 10px;">Guia de Estudo - Período 2</p>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-text">Período 2 de 3</div>
+        </div>
+
+        <div class="content">
+            <!-- SEÇÃO 1: CAMADAS DA ATMOSFERA -->
+            <div class="section-card section-1">
+                <div class="section-title">
+                    <span class="icon">📍</span>
+                    1. Camadas da Atmosfera
+                </div>
+                <p style="margin-bottom: 15px;">A atmosfera terrestre é dividida em cinco camadas principais, de baixo para cima:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Camada</th>
+                            <th>Características Principais</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="text-highlight">Troposfera</span></td>
+                            <td>Onde vivemos. Contém todo o clima e tempo que experimentamos. Temperatura diminui com a altitude.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="text-highlight">Estratosfera</span></td>
+                            <td>Contém a camada de ozônio (O₃) que protege de radiação UV prejudicial. Temperatura aumenta com a altitude.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="text-highlight">Mesosfera</span></td>
+                            <td>A maioria dos meteoros se desintegra aqui por causa do atrito. É a camada mais fria.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="text-highlight">Termosfera</span></td>
+                            <td>Temperaturas extremamente altas (até 1500°C). Aurora boreal ocorre aqui. Satélites orbitam nesta camada.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="text-highlight">Exosfera</span></td>
+                            <td>Limite entre a atmosfera e o espaço sideral. Ar muito rarefeito (pouco denso).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- SEÇÃO 2: COMPOSIÇÃO DO AR -->
+            <div class="section-card section-2">
+                <div class="section-title">
+                    <span class="icon">💨</span>
+                    2. Composição do Ar
+                </div>
+                <p style="margin-bottom: 15px;">O ar que respiramos é uma mistura de gases em proporções bem definidas:</p>
+
+                <ul>
+                    <li><span class="text-highlight">Nitrogênio (N₂): 78%</span> — o gás mais abundante na atmosfera</li>
+                    <li><span class="text-highlight">Oxigênio (O₂): 21%</span> — essencial para respiração dos seres vivos</li>
+                    <li><span class="text-highlight">Outros: ~1%</span> — dióxido de carbono (CO₂), gases nobres (argônio, neônio, hélio, criptônio, xenônio, radônio) e vapor d'água</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>Gases Nobres:</strong> Também chamados de gases inertes. Não reagem quimicamente com outras substâncias, o que os torna muito estáveis.
+                </div>
+
+                <p style="margin-top: 20px;"><strong>Propriedades do Ar Puro:</strong></p>
+                <ul>
+                    <li><span class="text-highlight">Inodoro</span> — não possui cheiro</li>
+                    <li><span class="text-highlight">Incolor</span> — não possui cor</li>
+                    <li><span class="text-highlight">Insípido</span> — não possui sabor</li>
+                </ul>
+            </div>
+
+            <!-- SEÇÃO 3: PROPRIEDADES DO AR -->
+            <div class="section-card section-3">
+                <div class="section-title">
+                    <span class="icon">🔄</span>
+                    3. Propriedades do Ar
+                </div>
+                <p style="margin-bottom: 15px;">O ar possui propriedades físicas importantes:</p>
+
+                <ul>
+                    <li><span class="text-highlight">Massa</span> — o ar é matéria e possui peso. Podemos medir a massa do ar em um recipiente.</li>
+                    <li><span class="text-highlight">Compressibilidade</span> — o ar pode ser comprimido (reduzido de volume). Exemplo: ao encher um pneu de bicicleta, estamos comprimindo ar.</li>
+                    <li><span class="text-highlight">Elasticidade</span> — após ser comprimido, o ar volta ao seu volume original. Exemplo: ao tirar a mão de uma seringa tampada, o ar volta a se expandir.</li>
+                    <li><span class="text-highlight">Expansibilidade</span> — o ar ocupa todo o espaço disponível. Se temos 1 litro de ar em um recipiente de 100 litros, ele se expandirá preenchendo todo o espaço.</li>
+                </ul>
+            </div>
+
+            <!-- SEÇÃO 4: PRESSÃO ATMOSFÉRICA -->
+            <div class="section-card section-4">
+                <div class="section-title">
+                    <span class="icon">⬇️</span>
+                    4. Pressão Atmosférica
+                </div>
+                <p style="margin-bottom: 15px;"><span class="text-highlight">Pressão</span> é a força exercida pelo ar sobre todas as superfícies.</p>
+
+                <ul>
+                    <li><span class="text-highlight">Ao nível do mar</span>: 1 atm = 760 mmHg (milímetros de mercúrio)</li>
+                    <li><span class="text-highlight">Quanto maior a altitude</span> → menor a pressão atmosférica (há menos ar acima de você)</li>
+                    <li>O <span class="text-highlight">ar flui de regiões de alta pressão para regiões de baixa pressão</span></li>
+                </ul>
+
+                <p style="margin-top: 20px;"><strong>Experimentos Históricos Importantes:</strong></p>
+                <ul>
+                    <li><span class="text-highlight">Berti (1641)</span> — realizou um dos primeiros experimentos sobre pressão atmosférica</li>
+                    <li><span class="text-highlight">Torricelli (1643)</span> — criou o primeiro barômetro com uma coluna de mercúrio de 76 cm, provando a existência da pressão atmosférica</li>
+                    <li><span class="text-highlight">Pascal (1648)</span> — provou que a pressão atmosférica diminui com a altitude, levando um barômetro ao topo de uma montanha</li>
+                </ul>
+
+                <p style="margin-top: 20px;"><strong>Exemplos do Dia a Dia:</strong></p>
+                <ul>
+                    <li><strong>Canudo:</strong> A <span class="text-highlight">diferença de pressão</span> entre a boca (baixa pressão) e o copo (pressão normal) suga o líquido</li>
+                    <li><strong>Aspirador de pó:</strong> Cria uma <span class="text-highlight">região de baixa pressão</span> que suga a poeira</li>
+                    <li><strong>Ouvido tampado na montanha:</strong> A <span class="text-highlight">tuba auditiva</span> equilibra a pressão entre o ouvido interno e o externo</li>
+                </ul>
+            </div>
+
+            <!-- SEÇÃO 5: CICLO DO NITROGÊNIO -->
+            <div class="section-card section-5">
+                <div class="section-title">
+                    <span class="icon">🔄</span>
+                    5. Ciclo do Nitrogênio
+                </div>
+                <p style="margin-bottom: 15px;"><span class="text-highlight">Problema:</span> O nitrogênio (N₂) é 78% da atmosfera, mas a maioria dos seres vivos não pode absorvê-lo diretamente!</p>
+
+                <p style="margin-top: 20px;"><strong>Etapas do Ciclo:</strong></p>
+                <ul>
+                    <li><span class="text-highlight">Fixação:</span> Bactérias do solo (ou em nódulos de raízes de leguminosas como feijão, soja, lentilha) transformam N₂ em amônia (NH₃) que pode ser usada</li>
+                    <li><span class="text-highlight">Nitrificação:</span> Bactérias transformam amônia em nitrito (NO₂⁻) e depois em nitrato (NO₃⁻)</li>
+                    <li><span class="text-highlight">Assimilação:</span> Plantas absorvem amônia ou nitrato para crescer e se desenvolver</li>
+                    <li><span class="text-highlight">Amonificação:</span> Quando seres vivos morrem, bactérias e fungos decompõem a matéria orgânica e liberam amônia novamente</li>
+                    <li><span class="text-highlight">Desnitrificação:</span> Bactérias transformam nitrato de volta em N₂ que retorna à atmosfera</li>
+                </ul>
+
+                <p style="margin-top: 20px;"><strong>Mutualismo Rhizobium:</strong></p>
+                <p>Um exemplo importante de <span class="text-highlight">simbiose</span> é a relação entre <span class="text-highlight">bactérias Rhizobium</span> e plantas leguminosas:</p>
+                <ul>
+                    <li>Bactérias vivem em <span class="text-highlight">nódulos nas raízes</span> das plantas</li>
+                    <li>Bactérias <span class="text-highlight">ganham açúcar</span> produzido pela planta através da fotossíntese</li>
+                    <li>Plantas <span class="text-highlight">ganham nitrogênio</span> fixado pelas bactérias</li>
+                    <li>Ambos se beneficiam! (Mutualismo)</li>
+                </ul>
+
+                <div class="diagram">
+N₂ (Atmosfera)
+    ↓
+[Fixação por bactérias]
+    ↓
+NH₃ (Amônia)
+    ↓
+[Nitrificação]
+    ↓
+NO₃⁻ (Nitrato)
+    ↓
+[Assimilação pelas plantas]
+    ↓
+[Morte de organismos]
+    ↓
+[Amonificação]
+    ↓
+[Desnitrificação]
+    ↓
+N₂ volta à atmosfera (Ciclo continua!)
+                </div>
+            </div>
+
+            <!-- SEÇÃO 6: CICLO DO OXIGÊNIO -->
+            <div class="section-card section-6">
+                <div class="section-title">
+                    <span class="icon">🌿</span>
+                    6. Ciclo do Oxigênio
+                </div>
+                <p style="margin-bottom: 15px;">O oxigênio é constantemente produzido e consumido na natureza.</p>
+
+                <p style="margin-top: 20px;"><strong>Processos que PRODUZEM O₂:</strong></p>
+                <ul>
+                    <li><span class="text-highlight">Fotossíntese</span> — plantas e algas usam luz solar, água e CO₂ para produzir oxigênio e açúcar</li>
+                    <li><span class="text-highlight">Decomposição do ozônio (O₃)</span> — luz UV quebra moléculas de ozônio, liberando oxigênio</li>
+                </ul>
+
+                <p style="margin-top: 20px;"><strong>Processos que CONSOMEM O₂:</strong></p>
+                <ul>
+                    <li><span class="text-highlight">Respiração celular</span> — todos os seres vivos usam oxigênio para extrair energia</li>
+                    <li><span class="text-highlight">Decomposição</span> — bactérias e fungos usam oxigênio para decompor matéria morta</li>
+                    <li><span class="text-highlight">Oxidação</span> — exemplo: ferrugem em metal (Fe + O₂ → óxido de ferro)</li>
+                    <li><span class="text-highlight">Combustão</span> — queima de combustíveis (gasolina, madeira, carvão) consome oxigênio</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>Equilíbrio:</strong> O ciclo do oxigênio mantém um equilíbrio entre produção e consumo. Se mais oxigênio for consumido do que produzido, pode haver problemas ambientais.
+                </div>
+            </div>
+
+            <!-- SEÇÃO 7: AR E SAÚDE / POLUENTES ATMOSFÉRICOS -->
+            <div class="section-card section-7">
+                <div class="section-title">
+                    <span class="icon">🫁</span>
+                    7. Ar e Saúde - Poluentes Atmosféricos
+                </div>
+                <p style="margin-bottom: 15px;">A poluição do ar prejudica a saúde humana e o meio ambiente.</p>
+
+                <ul>
+                    <li><span class="text-highlight">Material Particulado (MP)</span> — fuligem, pólen, poeira
+                        <ul style="margin-top: 8px;">
+                            <li>Causa problemas respiratórios, bronquite, asma</li>
+                            <li>Partículas muito pequenas entram nos pulmões</li>
+                        </ul>
+                    </li>
+
+                    <li style="margin-top: 15px;"><span class="text-highlight">Óxidos de Nitrogênio e Enxofre (NOx, SOx)</span> — produzidos por carros e indústrias
+                        <ul style="margin-top: 8px;">
+                            <li>Produzem <span class="text-highlight">smog</span> (neblina poluída)</li>
+                            <li>Reagem com umidade para formar <span class="text-highlight">chuva ácida</span></li>
+                        </ul>
+                    </li>
+
+                    <li style="margin-top: 15px;"><span class="text-highlight">Chuva Ácida</span> — efeitos graves
+                        <ul style="margin-top: 8px;">
+                            <li>Acidifica lagos e rios, matando peixes e plantas aquáticas</li>
+                            <li>Mata plantas terrestres e florestas</li>
+                            <li>Corrói e danifica monumentos, edifícios e estruturas metálicas</li>
+                        </ul>
+                    </li>
+
+                    <li style="margin-top: 15px;"><span class="text-highlight">Ozônio (O₃)</span> — bom ou ruim?
+                        <ul style="margin-top: 8px;">
+                            <li>Na <span class="text-highlight">estratosfera</span> = BENÉFICO (filtra radiação UV prejudicial)</li>
+                            <li>Na <span class="text-highlight">troposfera</span> = PREJUDICIAL (poluente que causa problemas respiratórios)</li>
+                        </ul>
+                    </li>
+
+                    <li style="margin-top: 15px;"><span class="text-highlight">Monóxido de Carbono (CO)</span> — muito perigoso!
+                        <ul style="margin-top: 8px;">
+                            <li>Incolor e inodoro (não podemos detectar pelos sentidos)</li>
+                            <li>Liga-se à hemoglobina (proteína que transporta oxigênio no sangue)</li>
+                            <li>Impede o transporte de oxigênio no corpo</li>
+                            <li>Pode causar morte por asfixia (falta de oxigênio)</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>Dica:</strong> Usar plantas em casa ajuda a purificar o ar, pois absorvem CO₂ e liberam O₂ através da fotossíntese!
+                </div>
+            </div>
+
+            <!-- BOTÕES DE NAVEGAÇÃO -->
+            <div class="button-container">
+                <button class="btn btn-secondary" onclick="voltarMenu()">⬅️ Voltar ao Menu</button>
+                <button class="btn btn-primary" onclick="iniciarQuiz()">Fazer o Quiz ➡️</button>
+            </div>
+        </div>
+
+        <footer>
+            <p>📚 Programa de Estudo - Ciências 2 - Período 2 | Murilo - 7º ano</p>
+        </footer>
+    </div>
+
+    <script>
+        function voltarMenu() {
+            if (confirm('Deseja voltar ao menu? Você não salvou seu progresso.')) {
+                window.location.href = 'index.html'; // Ajuste conforme necessário
+            }
+        }
+
+        function iniciarQuiz() {
+            window.location.href = 'quiz-periodo-2.html';
+        }
+    </script>
+</body>
+</html>
