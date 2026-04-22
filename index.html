@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ciências 2 — Programa de Estudo do Murilo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f0f1a;
+      color: #e0e0f0;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #1a1a3e 0%, #2d1b69 50%, #1a1a3e 100%);
+      padding: 48px 24px 40px;
+      text-align: center;
+      border-bottom: 2px solid #4a3080;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(120,80,255,0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(120,80,255,0.25);
+      border: 1px solid rgba(120,80,255,0.5);
+      border-radius: 20px;
+      padding: 6px 18px;
+      font-size: 0.78rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #b899ff;
+      margin-bottom: 16px;
+    }
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: #fff;
+    }
+    header h1 span { color: #a78bfa; }
+    .subtitle {
+      margin-top: 10px;
+      font-size: 1.05rem;
+      color: #a0a0c0;
+    }
+    .exam-info {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.4);
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      color: #fca5a5;
+      font-weight: 600;
+    }
+
+    /* ── INTRO ── */
+    .intro {
+      max-width: 780px;
+      margin: 40px auto 0;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .how-it-works {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .step {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 16px 20px;
+      width: 200px;
+      text-align: center;
+    }
+    .step .step-icon { font-size: 2rem; margin-bottom: 8px; }
+    .step .step-title { font-weight: 700; font-size: 0.9rem; color: #c4b5fd; }
+    .step .step-desc { font-size: 0.78rem; color: #888; margin-top: 4px; line-height: 1.4; }
+
+    /* ── PERÍODOS ── */
+    main {
+      max-width: 960px;
+      margin: 48px auto 60px;
+      padding: 0 24px;
+    }
+    .section-title {
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #6060a0;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    .periods-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── CARD DO PERÍODO ── */
+    .period-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 28px 32px;
+      transition: border-color .2s, transform .2s;
+    }
+    .period-card:hover { border-color: rgba(167,139,250,0.4); transform: translateY(-2px); }
+
+    .period-card.p1 { border-left: 4px solid #f97316; }
+    .period-card.p2 { border-left: 4px solid #06b6d4; }
+    .period-card.p3 { border-left: 4px solid #10b981; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .period-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.7rem;
+      flex-shrink: 0;
+    }
+    .p1 .period-icon { background: rgba(249,115,22,0.15); }
+    .p2 .period-icon { background: rgba(6,182,212,0.15); }
+    .p3 .period-icon { background: rgba(16,185,129,0.15); }
+
+    .period-meta { flex: 1; }
+    .period-label {
+      font-size: 0.72rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .p1 .period-label { color: #fb923c; }
+    .p2 .period-label { color: #22d3ee; }
+    .p3 .period-label { color: #34d399; }
+
+    .period-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .period-chapter {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 2px;
+    }
+    .timer-badge {
+      background: rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      color: #888;
+      white-space: nowrap;
+    }
+
+    .topics-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .topic-tag {
+      background: rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      color: #bbb;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: opacity .15s, transform .15s;
+      cursor: pointer;
+    }
+    .btn:hover { opacity: 0.85; transform: scale(1.02); }
+    .btn-guide {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #e0e0f0;
+    }
+    .btn-quiz.p1-btn { background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; }
+    .btn-quiz.p2-btn { background: linear-gradient(135deg, #06b6d4, #0284c7); color: #fff; }
+    .btn-quiz.p3-btn { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+
+    /* ── RODAPÉ ── */
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #444;
+      font-size: 0.8rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    footer strong { color: #6060a0; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge">🔬 Ciências — 7º Ano</div>
+    <h1>Programa de Estudo<br><span>do Murilo</span></h1>
+    <p class="subtitle">3 períodos · 30 minutos cada · Guia + Quiz</p>
+    <div class="exam-info">📅 Prova em 23/04/2026 — Prof.ª Beatriz</div>
+  </header>
+
+  <div class="intro">
+    <div class="how-it-works">
+      <div class="step">
+        <div class="step-icon">📖</div>
+        <div class="step-title">1. Leia o Guia</div>
+        <div class="step-desc">Estude o resumo do conteúdo com calma</div>
+      </div>
+      <div class="step">
+        <div class="step-icon">🧠</div>
+        <div class="step-title">2. Faça o Quiz</div>
+        <div class="step-desc">24 perguntas: fáceis, médias e difíceis</div>
+      </div>
+      <div class="step">
+        <div class="step-icon">🔄</div>
+        <div class="step-title">3. Repita</div>
+        <div class="step-desc">Faça os 3 períodos em dias diferentes</div>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <p class="section-title">📚 Conteúdos da prova</p>
+
+    <div class="periods-grid">
+
+      <!-- PERÍODO 1 -->
+      <div class="period-card p1">
+        <div class="card-header">
+          <div class="period-icon">🌋</div>
+          <div class="period-meta">
+            <div class="period-label">Período 1</div>
+            <div class="period-title">Geologia e Fenômenos Naturais</div>
+            <div class="period-chapter">Capítulo 09</div>
+          </div>
+          <div class="timer-badge">⏱ 30 min</div>
+        </div>
+        <div class="topics-list">
+          <span class="topic-tag">Tempo Geológico</span>
+          <span class="topic-tag">Extinções em Massa</span>
+          <span class="topic-tag">Pangeia</span>
+          <span class="topic-tag">Deriva Continental</span>
+          <span class="topic-tag">Tectônica de Placas</span>
+          <span class="topic-tag">Terremotos</span>
+          <span class="topic-tag">Vulcanismo</span>
+          <span class="topic-tag">Círculo de Fogo</span>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-guide" href="guia-periodo-1.html">📖 Guia de Estudo</a>
+          <a class="btn btn-quiz p1-btn" href="quiz-periodo-1.html">🧠 Iniciar Quiz</a>
+        </div>
+      </div>
+
+      <!-- PERÍODO 2 -->
+      <div class="period-card p2">
+        <div class="card-header">
+          <div class="period-icon">🌬️</div>
+          <div class="period-meta">
+            <div class="period-label">Período 2</div>
+            <div class="period-title">Ar: Propriedades e Composição</div>
+            <div class="period-chapter">Capítulo 11</div>
+          </div>
+          <div class="timer-badge">⏱ 30 min</div>
+        </div>
+        <div class="topics-list">
+          <span class="topic-tag">Camadas da Atmosfera</span>
+          <span class="topic-tag">Composição do Ar</span>
+          <span class="topic-tag">Propriedades do Ar</span>
+          <span class="topic-tag">Pressão Atmosférica</span>
+          <span class="topic-tag">Ciclo do Nitrogênio</span>
+          <span class="topic-tag">Ciclo do Oxigênio</span>
+          <span class="topic-tag">Poluentes</span>
+          <span class="topic-tag">Chuva Ácida</span>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-guide" href="guia-periodo-2.html">📖 Guia de Estudo</a>
+          <a class="btn btn-quiz p2-btn" href="quiz-periodo-2.html">🧠 Iniciar Quiz</a>
+        </div>
+      </div>
+
+      <!-- PERÍODO 3 -->
+      <div class="period-card p3">
+        <div class="card-header">
+          <div class="period-icon">🌡️</div>
+          <div class="period-meta">
+            <div class="period-label">Período 3</div>
+            <div class="period-title">Efeito Estufa e Equilíbrio Termodinâmico</div>
+            <div class="period-chapter">Capítulo 12</div>
+          </div>
+          <div class="timer-badge">⏱ 30 min</div>
+        </div>
+        <div class="topics-list">
+          <span class="topic-tag">Termodinâmica</span>
+          <span class="topic-tag">1ª e 2ª Leis</span>
+          <span class="topic-tag">Entropia</span>
+          <span class="topic-tag">Ciclo do Carbono</span>
+          <span class="topic-tag">Efeito Estufa</span>
+          <span class="topic-tag">Gases de Efeito Estufa</span>
+          <span class="topic-tag">Aquecimento Global</span>
+          <span class="topic-tag">Camada de Ozônio</span>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-guide" href="guia-periodo-3.html">📖 Guia de Estudo</a>
+          <a class="btn btn-quiz p3-btn" href="quiz-periodo-3.html">🧠 Iniciar Quiz</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    Ciências 2 · 7º Ano · <strong>Prova: 23/04/2026</strong> · Prof.ª Beatriz
+  </footer>
+
+</body>
+</html>
