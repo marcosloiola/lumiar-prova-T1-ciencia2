@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Período 1 (2ª Tentativa) | Geologia e Fenômenos Naturais</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #a0a0a0;
+            margin-bottom: 20px;
+        }
+
+        .quiz-container {
+            display: none;
+        }
+
+        .quiz-container.active {
+            display: block;
+        }
+
+        .question-counter {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .counter-text {
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .question-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .difficulty-easy {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .difficulty-medium {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .difficulty-hard {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .option:hover:not(.disabled) {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.15);
+        }
+
+        .option.correct {
+            border-color: #4caf50;
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+        }
+
+        .option.incorrect {
+            border-color: #f44336;
+            background: rgba(244, 67, 54, 0.15);
+            color: #f44336;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct-feedback {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4caf50;
+            color: #4caf50;
+        }
+
+        .feedback.incorrect-feedback {
+            background: rgba(244, 67, 54, 0.1);
+            border-left: 4px solid #f44336;
+            color: #f44336;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .feedback-text {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* RESULTADO */
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .result-container.active {
+            display: block;
+        }
+
+        .result-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .result-emoji {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #a0a0a0;
+            margin-top: 8px;
+        }
+
+        .percentage-display {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 30px 0;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-message {
+            font-size: 18px;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .btn-home {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-top: 30px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .result-stats {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .option {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="badge">2ª Tentativa</span>
+            <h1>Geologia e Fenômenos Naturais</h1>
+            <p class="subtitle">Cap. 09 - Período 1</p>
+        </div>
+
+        <div class="quiz-container active">
+            <div class="question-counter">
+                <div class="counter-text">Questão <span id="current-question">1</span> de 24</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 4.17%;"></div>
+                </div>
+            </div>
+
+            <div class="question-box">
+                <span class="difficulty-badge" id="difficulty-badge">Fácil</span>
+                <div class="question-text" id="question-text"></div>
+                <div class="options" id="options"></div>
+                <div class="feedback" id="feedback">
+                    <div class="feedback-title" id="feedback-title"></div>
+                    <div class="feedback-text" id="feedback-text"></div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-next" id="btn-next" disabled>Próxima Questão</button>
+            </div>
+        </div>
+
+        <div class="result-container">
+            <div class="result-box">
+                <div class="result-emoji" id="result-emoji">🎉</div>
+                <div class="result-title" id="result-title">Parabéns!</div>
+
+                <div class="result-stats">
+                    <div class="stat-box">
+                        <div class="stat-number" id="correct-count">0</div>
+                        <div class="stat-label">Acertos</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="incorrect-count">0</div>
+                        <div class="stat-label">Erros</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="total-questions">24</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                </div>
+
+                <div class="percentage-display" id="percentage">0%</div>
+                <div class="result-message" id="result-message"></div>
+
+                <button class="btn btn-home" onclick="window.location.href='index.html'">Voltar ao Índice</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // FÁCEIS (1-8)
+            {
+                difficulty: 'Fácil',
+                text: 'Qual é a idade aproximada da Terra?',
+                options: [
+                    { text: '4,5 bilhões de anos', correct: true },
+                    { text: 'A Terra tem aproximadamente 10 bilhões de anos, formada junto com outras galáxias do universo observável', correct: false },
+                    { text: 'Cerca de 2 bilhões de anos, calculados a partir dos fósseis mais antigos encontrados nos oceanos', correct: false },
+                    { text: 'A Terra existe há aproximadamente 500 milhões de anos, período em que surgiram as primeiras formas de vida', correct: false }
+                ],
+                explanation: 'Estudos radiométricos mostram que a Terra tem aproximadamente 4,5 bilhões de anos. Este é o resultado de datação por isótopos radioativos de rochas da crosta terrestre e meteoritos.'
+            },
+            {
+                difficulty: 'Fácil',
+                text: 'Como se chamava o supercontinente único que existiu antes de os continentes se separarem?',
+                options: [
+                    { text: 'Gondwana era o nome do supercontinente que ocupou o hemisfério sul antes da divisão continental', correct: false },
+                    { text: 'Laurásia foi o supercontinente localizado no hemisfério norte durante a era Mesozoica', correct: false },
+                    { text: 'Pangeia', correct: true },
+                    { text: 'Rodínia é o nome do supercontinente mais antigo, que existiu antes mesmo da Pangeia', correct: false }
+                ],
+                explanation: 'Pangeia foi o supercontinente que existiu há cerca de 300 milhões de anos. Posteriormente, ele se dividiu em Gondwana (hemisfério sul) e Laurásia (hemisfério norte), que continuaram se fragmentando até formar os continentes atuais.'
+            },
+            {
+                difficulty: 'Fácil',
+                text: 'Qual escala é usada para medir a magnitude (energia) dos terremotos?',
+                options: [
+                    { text: 'Escala de Fujita, utilizada para medir a intensidade de tornados e furacões pelo dano causado', correct: false },
+                    { text: 'Escala Richter', correct: true },
+                    { text: 'Escala de Beaufort, que classifica a força dos ventos em 12 categorias diferentes baseadas nos efeitos observados', correct: false },
+                    { text: 'Escala de Saffir-Simpson, criada para medir a intensidade dos furacões com base na velocidade dos ventos', correct: false }
+                ],
+                explanation: 'A Escala Richter, desenvolvida em 1935, mede a magnitude (energia liberada) dos terremotos usando dados de sismógrafos. Ela varia de 0 a 9, onde cada aumento de um ponto representa aproximadamente 30 vezes mais energia liberada.'
+            },
+            {
+                difficulty: 'Fácil',
+                text: 'O que é o epicentro de um terremoto?',
+                options: [
+                    { text: 'O ponto no interior da Terra onde a rocha se rompe e libera a energia do terremoto, originando as ondas sísmicas', correct: false },
+                    { text: 'A camada de rocha fundida no interior da Terra que envolve o núcleo e alimenta os vulcões', correct: false },
+                    { text: 'O ponto na superfície terrestre localizado diretamente acima do hipocentro', correct: true },
+                    { text: 'A escala numérica que representa a quantidade de energia liberada durante um evento sísmico de qualquer intensidade', correct: false }
+                ],
+                explanation: 'O epicentro é o ponto na superfície terrestre localizado diretamente acima do hipocentro (ponto onde ocorre a ruptura). É geralmente nesta região que os efeitos do terremoto são mais intensos.'
+            },
+            {
+                difficulty: 'Fácil',
+                text: 'O que é o hipocentro de um terremoto?',
+                options: [
+                    { text: 'O ponto na superfície diretamente acima da origem do terremoto, onde os danos costumam ser mais intensos', correct: false },
+                    { text: 'Ponto no interior da Terra onde ocorre o rompimento das rochas', correct: true },
+                    { text: 'O instrumento científico utilizado para detectar e registrar as vibrações causadas pelos terremotos ao redor do mundo', correct: false },
+                    { text: 'A região ao redor do Oceano Pacífico conhecida pela intensa atividade vulcânica e sísmica global', correct: false }
+                ],
+                explanation: 'O hipocentro é o ponto no interior da Terra onde ocorre o rompimento das rochas (também chamado de foco). É a origem do terremoto, e o epicentro é seu reflexo na superfície.'
+            },
+            {
+                difficulty: 'Fácil',
+                text: 'Quem propôs a Teoria da Deriva Continental?',
+                options: [
+                    { text: 'Charles Darwin, que em 1859 publicou a teoria da evolução das espécies por seleção natural', correct: false },
+                    { text: 'Isaac Newton, responsável pela formulação das leis do movimento e da gravitação universal no século XVII', correct: false },
+                    { text: 'Alfred Wegener', correct: true },
+                    { text: 'Galileu Galilei, que desenvolveu o método científico experimental e confirmou o modelo heliocêntrico de Copérnico', correct: false }
+                ],
+                explanation: 'Alfred Wegener, meteorologista e geógrafo alemão, propôs a Teoria da Deriva Continental em 1912. Sua teoria sugeria que os continentes teriam se movimentado ao longo do tempo geológico, mas sua explicação sobre como isso acontecia estava incompleta.'
+            },
+            {
+                difficulty: 'Fácil',
+                text: 'Qual extinção em massa foi a mais devastadora da história da Terra?',
+                options: [
+                    { text: 'Extinção do Cretáceo-Paleógeno, ocorrida há 65 milhões de anos e causada pelo impacto de um asteroide gigante', correct: false },
+                    { text: 'Extinção do Ordoviciano-Siluriano, que eliminou cerca de 85% das espécies marinhas há 440 milhões de anos', correct: false },
+                    { text: 'Extinção do Devoniano, que afetou principalmente os recifes de coral e os animais marinhos há 370 milhões de anos', correct: false },
+                    { text: 'Permiano-Triássico, com 95% das espécies extintas', correct: true }
+                ],
+                explanation: 'A extinção Permiano-Triássica, ocorrida há cerca de 251 milhões de anos, foi a mais devastadora, eliminando aproximadamente 95% das espécies marinhas e 70% das vertebrados terrestres. É conhecida como "The Great Dying".'
+            },
+            {
+                difficulty: 'Fácil',
+                text: 'O Brasil sofre poucos terremotos e não tem vulcões ativos. Por quê?',
+                options: [
+                    { text: 'Porque o Brasil está completamente cercado por oceanos, que absorvem as vibrações sísmicas antes que cheguem ao continente', correct: false },
+                    { text: 'Porque o Brasil fica no centro da Placa Sul-Americana, longe das bordas onde ocorrem os choques', correct: true },
+                    { text: 'Porque o território brasileiro é formado por rochas muito antigas e duras que não permitem a passagem de ondas sísmicas', correct: false },
+                    { text: 'Porque o clima tropical úmido do Brasil neutraliza as forças tectônicas que causam terremotos e vulcanismo', correct: false }
+                ],
+                explanation: 'O Brasil está localizado no interior da Placa Sul-Americana, longe dos limites entre placas onde ocorrem os principais eventos sísmicos e vulcânicos. As bordas das placas é que concentram atividade tectônica intensa.'
+            },
+
+            // MÉDIAS (9-16)
+            {
+                difficulty: 'Média',
+                text: 'Quais são os três tipos de limites entre placas tectônicas?',
+                options: [
+                    { text: 'Sísmico, vulcânico e gravitacional', correct: false },
+                    { text: 'Transformante, divergente e convergente', correct: true },
+                    { text: 'Oceânico, continental e misto, dependendo do tipo de crosta envolvida no contato entre as placas', correct: false },
+                    { text: 'Subductivo, expansivo e lateral, classificados de acordo com a direção de movimento das placas envolvidas', correct: false }
+                ],
+                explanation: 'Os três tipos de limites são: divergentes (placas se afastam, formando novas crosta), convergentes (placas se chocam, uma mergulhando sob a outra) e transformantes (placas deslizam horizontalmente uma sobre a outra).'
+            },
+            {
+                difficulty: 'Média',
+                text: 'O que causa o movimento das placas tectônicas?',
+                options: [
+                    { text: 'A força gravitacional da Lua, que atrai as placas em direção ao oceano, causando o movimento lento e contínuo', correct: false },
+                    { text: 'Correntes de convecção no manto terrestre', correct: true },
+                    { text: 'A rotação da Terra em torno do seu eixo, que gera força centrífuga capaz de deslocar as placas lateralmente', correct: false },
+                    { text: 'A pressão do magma nos vulcões, que ao entrar em erupção empurra as placas em direção oposta ao vulcão ativo', correct: false }
+                ],
+                explanation: 'As correntes de convecção no manto terrestre são o principal motor do movimento das placas. Material quente e menos denso sobe, enquanto material frio e mais denso desce, criando um ciclo contínuo que arrasta as placas litosféricas.'
+            },
+            {
+                difficulty: 'Média',
+                text: 'O que é subducção?',
+                options: [
+                    { text: 'O processo pelo qual duas placas tectônicas se afastam, formando dorsais oceânicas no fundo do mar', correct: false },
+                    { text: 'A formação de ilhas vulcânicas no meio do oceano, longe dos limites entre as placas tectônicas', correct: false },
+                    { text: 'Quando uma placa desliza horizontalmente sob outra sem afundar, criando falhas geológicas transformantes', correct: false },
+                    { text: 'Quando uma placa mergulha sob outra no manto, formando fossas oceânicas e cadeias de montanhas', correct: true }
+                ],
+                explanation: 'Subducção é o processo onde uma placa tectônica (geralmente oceânica e mais densa) mergulha sob outra (geralmente continental) em um limite convergente. Forma fossas oceânicas profundas e pode gerar terremotos e vulcões.'
+            },
+            {
+                difficulty: 'Média',
+                text: 'Quais evidências Alfred Wegener usou para propor a Deriva Continental?',
+                options: [
+                    { text: 'Temperaturas oceânicas diferentes em cada hemisfério e padrões de circulação das correntes marítimas profundas', correct: false },
+                    { text: 'Encaixe dos continentes, fósseis iguais em continentes separados e rochas similares nas costas opostas', correct: true },
+                    { text: 'Medições magnéticas do fundo do oceano e registros de terremotos ao longo das dorsais oceânicas', correct: false },
+                    { text: 'Variações na gravidade medidas em diferentes pontos do globo terrestre ao longo de décadas de pesquisa', correct: false }
+                ],
+                explanation: 'Wegener usou três principais evidências: o encaixe quase perfeito entre os continentes (como um quebra-cabeça), fósseis idênticos em continentes separados (como Mesosaurus) e rochas similares nas costas opostas dos continentes.'
+            },
+            {
+                difficulty: 'Média',
+                text: 'Qual a diferença entre vulcanismo primário e secundário?',
+                options: [
+                    { text: 'Primário ocorre em vulcões (lava na superfície); secundário são gêiseres e fontes termais', correct: true },
+                    { text: 'O vulcanismo primário ocorre apenas em ilhas oceânicas, enquanto o secundário acontece exclusivamente nos continentes', correct: false },
+                    { text: 'Primário é o vulcanismo submarino e secundário é o vulcanismo terrestre que ocorre em áreas montanhosas', correct: false },
+                    { text: 'O vulcanismo primário é aquele que ocorreu no passado geológico e o secundário é o vulcanismo ativo atualmente', correct: false }
+                ],
+                explanation: 'Vulcanismo primário envolve a erupção direta de magma (lava), formando vulcões. Vulcanismo secundário refere-se a manifestações de calor relacionadas (gêiseres, fontes termais, fumarolas) sem erupção de lava.'
+            },
+            {
+                difficulty: 'Média',
+                text: 'O que são as dorsais oceânicas?',
+                options: [
+                    { text: 'Fossas profundas no fundo do oceano onde uma placa mergulha sob a outra no processo de subducção tectônica', correct: false },
+                    { text: 'Cadeias de vulcões submarinos que se formam nos limites divergentes, onde as placas se afastam', correct: true },
+                    { text: 'Ilhas formadas pela deposição de sedimentos trazidos pelos rios ao longo de milhares de anos no oceano', correct: false },
+                    { text: 'Camadas de rocha sedimentar que se depositam no fundo do oceano e registram a história climática da Terra', correct: false }
+                ],
+                explanation: 'Dorsais oceânicas são cadeias de vulcões submarinos que se formam nos limites divergentes entre placas. Magma sobe e solidifica, criando nova crosta oceânica. A dorsal Meso-Atlântica é um exemplo notável.'
+            },
+            {
+                difficulty: 'Média',
+                text: 'Quantas grandes placas tectônicas existem na Terra?',
+                options: [
+                    { text: '7 grandes placas', correct: false },
+                    { text: '30 placas, sendo 15 grandes e 15 menores distribuídas pelos oceanos e continentes', correct: false },
+                    { text: '15 grandes placas (mais cerca de 40 menores)', correct: true },
+                    { text: 'Apenas 3 placas principais: a placa oceânica, a placa continental e a placa de transição entre os dois tipos', correct: false }
+                ],
+                explanation: 'Há 15 grandes placas tectônicas principais, mais dezenas de placas menores. As maiores incluem Pacífica, Norte-Americana, Eurasiana, Africana, Indo-Australiana, Antártica, Sul-Americana e outras.'
+            },
+            {
+                difficulty: 'Média',
+                text: 'O que são tsunamis e como se formam?',
+                options: [
+                    { text: 'Ventos fortíssimos gerados por diferenças de pressão atmosférica sobre os oceanos tropicais aquecidos', correct: false },
+                    { text: 'Ondas gigantes causadas por terremotos, erupções vulcânicas ou deslizamentos submarinos', correct: true },
+                    { text: 'Tempestades tropicais com ventos circulares que se formam sobre oceanos quentes e se movem em espiral', correct: false },
+                    { text: 'Correntes oceânicas profundas que transportam água fria das regiões polares para os trópicos continuamente', correct: false }
+                ],
+                explanation: 'Tsunamis são ondas sísmicas do oceano causadas principalmente por terremotos submarinos em limites convergentes. Também podem ser causados por erupções vulcânicas ou deslizamentos submarinos massivos.'
+            },
+
+            // DIFÍCEIS (17-24)
+            {
+                difficulty: 'Difícil',
+                text: 'Por que o Círculo de Fogo do Pacífico concentra tanta atividade geológica?',
+                options: [
+                    { text: 'Porque o Pacífico é o oceano mais antigo da Terra, com rochas mais frágeis que se rompem com facilidade', correct: false },
+                    { text: 'Porque está na faixa equatorial, onde o calor do Sol aquece o magma e aumenta a pressão tectônica global', correct: false },
+                    { text: 'Porque é rodeado por limites convergentes e transformantes entre várias placas, concentrando vulcões e sismos', correct: true },
+                    { text: 'Porque o Oceano Pacífico é mais raso que os demais, facilitando a comunicação entre o magma e a superfície', correct: false }
+                ],
+                explanation: 'O Círculo de Fogo do Pacífico é cercado por limites de placas convergentes (subducção) e transformantes, gerando intensa atividade vulcânica e sísmica. Cerca de 75% dos vulcões ativos mundiais e 90% dos terremotos ocorrem lá.'
+            },
+            {
+                difficulty: 'Difícil',
+                text: 'Qual é a ordem correta das divisões do tempo geológico, do maior para o menor?',
+                options: [
+                    { text: 'Era → Éon → Período → Época', correct: false },
+                    { text: 'Éon → Era → Período → Época', correct: true },
+                    { text: 'Período → Era → Éon → Época, sendo o período a maior divisão do tempo geológico utilizada pelos cientistas', correct: false },
+                    { text: 'Época → Período → Era → Éon, ordenados do mais recente para o mais antigo na escala geológica global', correct: false }
+                ],
+                explanation: 'A ordem correta é: Éon (maior, bilhões de anos) → Era (centenas de milhões) → Período (dezenas de milhões) → Época (milhões). Exemplo: Éon Fanerozóico → Era Mesozóica → Período Cretáceo → Época Cenomaniana.'
+            },
+            {
+                difficulty: 'Difícil',
+                text: 'Como os fósseis contribuíram para a teoria da deriva continental de Wegener?',
+                options: [
+                    { text: 'Os fósseis mostraram que os oceanos se formaram há menos tempo do que os continentes, confirmando a separação', correct: false },
+                    { text: 'Fósseis idênticos encontrados em continentes hoje separados por oceanos indicam que estiveram unidos', correct: true },
+                    { text: 'Os fósseis marinhos encontrados no topo das montanhas provaram que o nível do mar subiu drasticamente no passado', correct: false },
+                    { text: 'Fósseis de animais extintos mostraram que o clima global foi muito mais quente do que é atualmente na Terra', correct: false }
+                ],
+                explanation: 'Fósseis como Mesosaurus e Glossopteris encontrados apenas em continentes que hoje estão separados indicam conexão passada. Fossas iguais não poderiam atravessar oceanos, suportando a ideia de que os continentes estiveram conectados.'
+            },
+            {
+                difficulty: 'Difícil',
+                text: 'Compare a extinção do Permiano-Triássico com a do Cretáceo em termos de impacto.',
+                options: [
+                    { text: 'Ambas foram causadas por asteroides e eliminaram aproximadamente o mesmo número de espécies terrestres e marinhas', correct: false },
+                    { text: 'A do Cretáceo foi maior porque eliminou os dinossauros, que eram os animais dominantes do planeta na época', correct: false },
+                    { text: 'Permiano-Triássico foi maior (95% das espécies); Cretáceo eliminou os dinossauros mas foi menos abrangente', correct: true },
+                    { text: 'São equivalentes em magnitude, mas a do Cretáceo é mais estudada por ter ocorrido mais recentemente na história', correct: false }
+                ],
+                explanation: 'A extinção Permiano-Triássica foi muito mais severa (95% das espécies extintas) que a do Cretáceo (70% das espécies, incluindo os dinossauros). Embora a do Cretáceo seja mais famosa, a do Permiano foi vastamente mais devastadora.'
+            },
+            {
+                difficulty: 'Difícil',
+                text: 'O que diferencia limites divergentes de convergentes?',
+                options: [
+                    { text: 'Divergentes: placas se afastam, formam dorsais; convergentes: placas se chocam, formam montanhas ou fossas', correct: true },
+                    { text: 'Divergentes ocorrem apenas nos continentes e convergentes ocorrem apenas no fundo dos oceanos do planeta', correct: false },
+                    { text: 'Nos divergentes as placas deslizam lateralmente e nos convergentes elas se afastam em direções opostas', correct: false },
+                    { text: 'Divergentes formam terremotos e convergentes formam vulcões, sem nenhuma sobreposição entre os dois processos', correct: false }
+                ],
+                explanation: 'Limites divergentes: placas se separam, criando dorsais oceânicas e vulcões. Limites convergentes: placas se chocam, causando subducção, vulcões e montanhas. Limites transformantes: placas deslizam horizontalmente.'
+            },
+            {
+                difficulty: 'Difícil',
+                text: 'O que são correntes de convecção e qual o seu papel na tectônica de placas?',
+                options: [
+                    { text: 'São correntes oceânicas que transportam calor dos trópicos para os polos, regulando o clima do planeta Terra', correct: false },
+                    { text: 'São ventos de alta altitude que circulam em torno do globo e influenciam a distribuição das precipitações', correct: false },
+                    { text: 'São movimentos de material quente subindo e frio descendo no manto, que arrastam as placas', correct: true },
+                    { text: 'São fluxos de magma que sobem diretamente do núcleo terrestre e criam pontos quentes sob as placas oceânicas', correct: false }
+                ],
+                explanation: 'Correntes de convecção no manto são movimentos circulares de material quente (menos denso) que sobe e material frio (mais denso) que desce. Esses movimentos criam força suficiente para arrastar as placas litosféricas sobre sua superfície.'
+            },
+            {
+                difficulty: 'Difícil',
+                text: 'Por que a extinção do Cretáceo-Paleógeno é atribuída ao impacto de um asteroide?',
+                options: [
+                    { text: 'Porque vulcões entraram em erupção simultaneamente em todo o planeta, bloqueando a luz solar por séculos seguidos', correct: false },
+                    { text: 'Indícios como a camada de irídio no solo, crateras e mudanças climáticas abruptas apontam para impacto extraterrestre', correct: true },
+                    { text: 'Porque registros fósseis mostram que os dinossauros morreram de doenças que se espalharam rapidamente pelo planeta', correct: false },
+                    { text: 'Pela análise de rochas que mostram resfriamento gradual do planeta ao longo de milhões de anos nesse período', correct: false }
+                ],
+                explanation: 'Evidências científicas incluem: camada global de irídio (elemento raro na Terra, comum em meteoritos), a cratera de Chicxulub no México, e registros de inverno por impacto (bloqueio solar). Além disso, fósseis mostram extinção abrupta, não gradual.'
+            },
+            {
+                difficulty: 'Difícil',
+                text: 'Como a tectônica de placas explica a formação dos Alpes e dos Himalaias?',
+                options: [
+                    { text: 'Foram formados pelo acúmulo de sedimentos oceânicos empurrados pelas correntes marinhas para as costas dos continentes', correct: false },
+                    { text: 'Surgiram de erupções vulcânicas sucessivas que empilharam lava e cinzas ao longo de milhões de anos na superfície', correct: false },
+                    { text: 'São resultado de limites divergentes onde o magma vazou e solidificou em camadas ao longo do tempo geológico', correct: false },
+                    { text: 'Colisão de placas continentais em limites convergentes dobrou e empilhou as rochas, formando as cadeias montanhosas', correct: true }
+                ],
+                explanation: 'Os Alpes formaram-se pela colisão entre a Placa Africana e a Eurasiana. Os Himalaias ainda estão se elevando pela colisão entre as placas Indiana e Eurasiana. Rochas continentais, menos densas, não sofrem subducção e se dobram e empilham formando montanhas.'
+            }
+        ];
+
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let answered = false;
+
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            const container = document.querySelector('.quiz-container');
+
+            document.getElementById('current-question').textContent = currentQuestion + 1;
+            document.getElementById('progress-fill').style.width = ((currentQuestion + 1) / 24 * 100) + '%';
+
+            // Difficulty badge
+            const badge = document.getElementById('difficulty-badge');
+            badge.textContent = question.difficulty;
+            badge.className = 'difficulty-badge';
+            if (question.difficulty === 'Fácil') {
+                badge.classList.add('difficulty-easy');
+            } else if (question.difficulty === 'Média') {
+                badge.classList.add('difficulty-medium');
+            } else {
+                badge.classList.add('difficulty-hard');
+            }
+
+            document.getElementById('question-text').textContent = question.text;
+
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionBtn = document.createElement('div');
+                optionBtn.className = 'option';
+                optionBtn.textContent = option.text;
+                optionBtn.onclick = () => selectOption(index, option.correct);
+                optionsDiv.appendChild(optionBtn);
+            });
+
+            document.getElementById('btn-next').disabled = true;
+            document.getElementById('feedback').classList.remove('show');
+            answered = false;
+        }
+
+        function selectOption(index, isCorrect) {
+            if (answered) return;
+
+            answered = true;
+            const options = document.querySelectorAll('.option');
+            const question = questions[currentQuestion];
+
+            options.forEach((opt, idx) => {
+                opt.classList.add('disabled');
+                if (idx === index) {
+                    opt.classList.add('selected');
+                    if (isCorrect) {
+                        opt.classList.add('correct');
+                    } else {
+                        opt.classList.add('incorrect');
+                    }
+                }
+                if (question.options[idx].correct && idx !== index) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+
+            feedback.classList.add('show');
+
+            if (isCorrect) {
+                correctAnswers++;
+                feedback.classList.add('correct-feedback');
+                feedback.classList.remove('incorrect-feedback');
+                feedbackTitle.textContent = '✓ Resposta Correta!';
+                feedbackText.textContent = question.explanation;
+            } else {
+                feedback.classList.add('incorrect-feedback');
+                feedback.classList.remove('correct-feedback');
+                feedbackTitle.textContent = '✗ Resposta Incorreta';
+                feedbackText.textContent = question.explanation;
+            }
+
+            document.getElementById('btn-next').disabled = false;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.querySelector('.quiz-container').classList.remove('active');
+            document.querySelector('.result-container').classList.add('active');
+
+            const percentage = Math.round((correctAnswers / 24) * 100);
+
+            document.getElementById('correct-count').textContent = correctAnswers;
+            document.getElementById('incorrect-count').textContent = 24 - correctAnswers;
+            document.getElementById('percentage').textContent = percentage + '%';
+
+            let message = '';
+            let emoji = '';
+
+            if (percentage >= 90) {
+                emoji = '🌟';
+                message = 'Excelente! Você domina perfeitamente o conteúdo!';
+            } else if (percentage >= 80) {
+                emoji = '🎉';
+                message = 'Muito bom! Você tem um ótimo entendimento do material!';
+            } else if (percentage >= 70) {
+                emoji = '👍';
+                message = 'Bom desempenho! Mas há alguns pontos para revisar.';
+            } else if (percentage >= 60) {
+                emoji = '📚';
+                message = 'Você acertou mais da metade! Estude um pouco mais os tópicos que errou.';
+            } else {
+                emoji = '💪';
+                message = 'Você pode melhorar! Revise o conteúdo e tente novamente.';
+            }
+
+            document.getElementById('result-emoji').textContent = emoji;
+            document.getElementById('result-message').textContent = message;
+        }
+
+        document.getElementById('btn-next').addEventListener('click', nextQuestion);
+
+        // Initialize
+        loadQuestion();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Período 3 - Efeito Estufa e Equilíbrio Termodinâmico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            color: #ecf0f1;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(20, 25, 40, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #16a085 0%, #d35400 100%);
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .quiz-container {
+            display: none;
+        }
+
+        .quiz-container.active {
+            display: block;
+        }
+
+        .question-card {
+            background: rgba(50, 60, 80, 0.8);
+            border-left: 5px solid #16a085;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .question-card.active {
+            display: block;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-number {
+            font-size: 12px;
+            color: #16a085;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-button {
+            background: rgba(100, 110, 130, 0.6);
+            border: 2px solid rgba(100, 110, 130, 0.8);
+            color: #ecf0f1;
+            padding: 14px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            text-align: left;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .option-button:hover:not(:disabled) {
+            background: rgba(100, 110, 130, 0.9);
+            border-color: #16a085;
+            transform: translateX(5px);
+        }
+
+        .option-button:disabled {
+            cursor: not-allowed;
+        }
+
+        .option-button.correct {
+            background: rgba(22, 160, 133, 0.8);
+            border-color: #16a085;
+            box-shadow: 0 0 15px rgba(22, 160, 133, 0.4);
+        }
+
+        .option-button.incorrect {
+            background: rgba(231, 76, 60, 0.8);
+            border-color: #e74c3c;
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .feedback {
+            margin-top: 16px;
+            padding: 14px;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .feedback.correct {
+            background: rgba(22, 160, 133, 0.2);
+            border-left: 4px solid #16a085;
+            color: #90ee90;
+        }
+
+        .feedback.incorrect {
+            background: rgba(231, 76, 60, 0.2);
+            border-left: 4px solid #e74c3c;
+            color: #ffb6c1;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .feedback-text {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .correct-answer-highlight {
+            background: rgba(22, 160, 133, 0.3);
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin: 8px 0;
+            border-left: 3px solid #16a085;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        button.nav-btn {
+            background: rgba(22, 160, 133, 0.7);
+            border: 2px solid #16a085;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        button.nav-btn:hover {
+            background: #16a085;
+            box-shadow: 0 5px 15px rgba(22, 160, 133, 0.4);
+        }
+
+        button.nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .results-container {
+            display: none;
+            text-align: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .results-container.active {
+            display: block;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #16a085 0%, #d35400 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(22, 160, 133, 0.3);
+        }
+
+        .results-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #16a085;
+        }
+
+        .results-detail {
+            background: rgba(50, 60, 80, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(100, 110, 130, 0.4);
+            font-size: 16px;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #bdc3c7;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #16a085;
+        }
+
+        .result-value.error {
+            color: #e74c3c;
+        }
+
+        .motivational-message {
+            background: rgba(22, 160, 133, 0.2);
+            border-left: 4px solid #16a085;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 16px;
+            line-height: 1.6;
+            font-style: italic;
+            color: #90ee90;
+        }
+
+        .home-button {
+            background: linear-gradient(135deg, #d35400 0%, #16a085 100%);
+            border: none;
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(211, 84, 0, 0.4);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(100, 110, 130, 0.4);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #16a085 0%, #d35400 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .start-screen {
+            text-align: center;
+            display: none;
+        }
+
+        .start-screen.active {
+            display: block;
+        }
+
+        .start-title {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #16a085;
+        }
+
+        .start-subtitle {
+            font-size: 16px;
+            color: #bdc3c7;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, #16a085 0%, #d35400 100%);
+            border: none;
+            color: #fff;
+            padding: 16px 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(22, 160, 133, 0.4);
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .difficulty-badge.easy {
+            background: rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
+        }
+
+        .difficulty-badge.medium {
+            background: rgba(241, 196, 15, 0.3);
+            color: #f1c40f;
+            border: 1px solid #f1c40f;
+        }
+
+        .difficulty-badge.hard {
+            background: rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="badge">2ª Tentativa</div>
+            <h1>🌍 Efeito Estufa e Equilíbrio Termodinâmico</h1>
+            <p>Capítulo 12 - Período 3</p>
+        </div>
+
+        <div class="content">
+            <!-- Tela Inicial -->
+            <div class="start-screen active">
+                <h2 class="start-title">Bem-vindo ao Quiz!</h2>
+                <p class="start-subtitle">
+                    Este quiz tem 24 perguntas sobre Efeito Estufa e Equilíbrio Termodinâmico.<br>
+                    8 perguntas fáceis, 8 médias e 8 difíceis.<br>
+                    Você tem todo o tempo que precisar!
+                </p>
+                <button class="start-button" onclick="startQuiz()">Iniciar Quiz</button>
+            </div>
+
+            <!-- Quiz -->
+            <div class="quiz-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <!-- Questão 1 -->
+                <div class="question-card active">
+                    <div class="question-number">Questão 1 de 24 - Fácil</div>
+                    <div class="difficulty-badge easy">Fácil</div>
+                    <div class="question-text">O efeito estufa é um fenômeno natural ou causado pelo homem?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(0, 'C', 'Q1')">A) É exclusivamente causado pelo homem, resultado da industrialização e do uso de combustíveis fósseis no século XX</button>
+                        <button class="option-button" onclick="checkAnswer(0, 'C', 'Q1')">B) É completamente artificial, criado pelos gases lançados na atmosfera pelas fábricas e pelos automóveis modernos</button>
+                        <button class="option-button" onclick="checkAnswer(0, 'C', 'Q1')">C) Natural e essencial para a vida</button>
+                        <button class="option-button" onclick="checkAnswer(0, 'C', 'Q1')">D) É um fenômeno misto — existia naturalmente mas foi amplificado pelas atividades humanas nos últimos dois séculos</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q1">
+                        <div class="feedback-title" id="feedbackTitle-Q1"></div>
+                        <div class="feedback-text" id="feedbackText-Q1"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 2 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 2 de 24 - Fácil</div>
+                    <div class="difficulty-badge easy">Fácil</div>
+                    <div class="question-text">Qual seria a temperatura média da Terra SEM o efeito estufa?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(1, 'B', 'Q2')">A) +5°C, ligeiramente abaixo da média atual mas ainda compatível com as formas de vida existentes no planeta</button>
+                        <button class="option-button" onclick="checkAnswer(1, 'B', 'Q2')">B) -18°C</button>
+                        <button class="option-button" onclick="checkAnswer(1, 'B', 'Q2')">C) +30°C, pois sem a atmosfera toda a energia solar chegaria diretamente à superfície sem ser filtrada ou refletida</button>
+                        <button class="option-button" onclick="checkAnswer(1, 'B', 'Q2')">D) -50°C, temperatura equivalente à dos polos durante o inverno, que tornaria o planeta completamente congelado</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q2">
+                        <div class="feedback-title" id="feedbackTitle-Q2"></div>
+                        <div class="feedback-text" id="feedbackText-Q2"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 3 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 3 de 24 - Fácil</div>
+                    <div class="difficulty-badge easy">Fácil</div>
+                    <div class="question-text">Qual é a temperatura média atual da Terra graças ao efeito estufa natural?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(2, 'C', 'Q3')">A) 30°C</button>
+                        <button class="option-button" onclick="checkAnswer(2, 'C', 'Q3')">B) 0°C</button>
+                        <button class="option-button" onclick="checkAnswer(2, 'C', 'Q3')">C) 15°C</button>
+                        <button class="option-button" onclick="checkAnswer(2, 'C', 'Q3')">D) 25°C</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q3">
+                        <div class="feedback-title" id="feedbackTitle-Q3"></div>
+                        <div class="feedback-text" id="feedbackText-Q3"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 4 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 4 de 24 - Fácil</div>
+                    <div class="difficulty-badge easy">Fácil</div>
+                    <div class="question-text">O que diz a 1ª Lei da Termodinâmica?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(3, 'D', 'Q4')">A) Sistemas isolados tendem ao equilíbrio, com temperatura e pressão se tornando uniformes ao longo do tempo</button>
+                        <button class="option-button" onclick="checkAnswer(3, 'D', 'Q4')">B) A energia de um sistema aumenta proporcionalmente à quantidade de calor aplicado e trabalho realizado externamente</button>
+                        <button class="option-button" onclick="checkAnswer(3, 'D', 'Q4')">C) A entropia de sistemas fechados sempre aumenta espontaneamente, levando à desordem máxima com o tempo</button>
+                        <button class="option-button" onclick="checkAnswer(3, 'D', 'Q4')">D) A energia não se cria nem se destrói — apenas se transforma</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q4">
+                        <div class="feedback-title" id="feedbackTitle-Q4"></div>
+                        <div class="feedback-text" id="feedbackText-Q4"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 5 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 5 de 24 - Fácil</div>
+                    <div class="difficulty-badge easy">Fácil</div>
+                    <div class="question-text">Onde ocorre a fotossíntese dentro das células vegetais?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(4, 'C', 'Q5')">A) Mitocôndrias — organelas responsáveis pela produção de energia em todas as células eucarióticas do planeta</button>
+                        <button class="option-button" onclick="checkAnswer(4, 'C', 'Q5')">B) Núcleo celular — onde o DNA armazena as instruções para todos os processos metabólicos da célula vegetal</button>
+                        <button class="option-button" onclick="checkAnswer(4, 'C', 'Q5')">C) Cloroplastos</button>
+                        <button class="option-button" onclick="checkAnswer(4, 'C', 'Q5')">D) Ribossomos — organelas que sintetizam proteínas a partir das instruções do DNA contidas no núcleo celular</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q5">
+                        <div class="feedback-title" id="feedbackTitle-Q5"></div>
+                        <div class="feedback-text" id="feedbackText-Q5"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 6 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 6 de 24 - Fácil</div>
+                    <div class="difficulty-badge easy">Fácil</div>
+                    <div class="question-text">Quais organismos produzem mais de 50% do oxigênio atmosférico da Terra?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(5, 'D', 'Q6')">A) Árvores tropicais da Amazônia e de outras florestas equatoriais distribuídas pelos continentes do hemisfério sul</button>
+                        <button class="option-button" onclick="checkAnswer(5, 'D', 'Q6')">B) Algas marinhas macroscópicas como as sargassas, que cobrem grandes áreas dos oceanos tropicais e subtropicais</button>
+                        <button class="option-button" onclick="checkAnswer(5, 'D', 'Q6')">C) Fungos e bactérias decompositoras que liberam oxigênio ao degradar a matéria orgânica nos solos e oceanos</button>
+                        <button class="option-button" onclick="checkAnswer(5, 'D', 'Q6')">D) Fitoplânctons (algas microscópicas e cianobactérias)</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q6">
+                        <div class="feedback-title" id="feedbackTitle-Q6"></div>
+                        <div class="feedback-text" id="feedbackText-Q6"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 7 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 7 de 24 - Fácil</div>
+                    <div class="difficulty-badge easy">Fácil</div>
+                    <div class="question-text">Qual é o principal gás de efeito estufa liberado pela queima de combustíveis fósseis?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(6, 'B', 'Q7')">A) Metano (CH₄)</button>
+                        <button class="option-button" onclick="checkAnswer(6, 'B', 'Q7')">B) CO₂</button>
+                        <button class="option-button" onclick="checkAnswer(6, 'B', 'Q7')">C) Ozônio (O₃)</button>
+                        <button class="option-button" onclick="checkAnswer(6, 'B', 'Q7')">D) Óxido nitroso (N₂O)</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q7">
+                        <div class="feedback-title" id="feedbackTitle-Q7"></div>
+                        <div class="feedback-text" id="feedbackText-Q7"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 8 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 8 de 24 - Fácil</div>
+                    <div class="difficulty-badge easy">Fácil</div>
+                    <div class="question-text">O que é entropia?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(7, 'C', 'Q8')">A) A quantidade de energia disponível para realizar trabalho em um sistema termodinâmico fechado qualquer</button>
+                        <button class="option-button" onclick="checkAnswer(7, 'C', 'Q8')">B) A temperatura de equilíbrio atingida quando dois corpos em contato trocam calor até se igualarem</button>
+                        <button class="option-button" onclick="checkAnswer(7, 'C', 'Q8')">C) Grau de desordem de um sistema</button>
+                        <button class="option-button" onclick="checkAnswer(7, 'C', 'Q8')">D) A velocidade com que a energia térmica se dissipa de um sistema quente para o ambiente mais frio ao redor</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q8">
+                        <div class="feedback-title" id="feedbackTitle-Q8"></div>
+                        <div class="feedback-text" id="feedbackText-Q8"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 9 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 9 de 24 - Média</div>
+                    <div class="difficulty-badge medium">Média</div>
+                    <div class="question-text">Quais são os 5 principais gases de efeito estufa?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(8, 'B', 'Q9')">A) Nitrogênio, oxigênio, argônio, hélio e neônio — os gases mais abundantes na composição do ar atmosférico</button>
+                        <button class="option-button" onclick="checkAnswer(8, 'B', 'Q9')">B) CO₂, CH₄, N₂O, O₃ e vapor de água</button>
+                        <button class="option-button" onclick="checkAnswer(8, 'B', 'Q9')">C) Dióxido de enxofre, monóxido de carbono, cloro, flúor e bromo, liberados por indústrias químicas no mundo</button>
+                        <button class="option-button" onclick="checkAnswer(8, 'B', 'Q9')">D) Hidrogênio, hélio, metano, etano e propano — os gases mais leves que tendem a escapar para o espaço sideral</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q9">
+                        <div class="feedback-title" id="feedbackTitle-Q9"></div>
+                        <div class="feedback-text" id="feedbackText-Q9"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 10 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 10 de 24 - Média</div>
+                    <div class="difficulty-badge medium">Média</div>
+                    <div class="question-text">Qual a diferença entre efeito estufa natural e aquecimento global?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(9, 'B', 'Q10')">A) São exatamente o mesmo fenômeno, com nomes diferentes usados por diferentes grupos de cientistas ao redor do mundo</button>
+                        <button class="option-button" onclick="checkAnswer(9, 'B', 'Q10')">B) O efeito estufa é benéfico e natural; o aquecimento global é o agravamento causado pelo excesso de gases humanos</button>
+                        <button class="option-button" onclick="checkAnswer(9, 'B', 'Q10')">C) O efeito estufa ocorre na estratosfera e o aquecimento global ocorre na troposfera, em camadas diferentes do ar</button>
+                        <button class="option-button" onclick="checkAnswer(9, 'B', 'Q10')">D) O aquecimento global é natural e o efeito estufa é artificial — o nome correto para o problema humano é estufa</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q10">
+                        <div class="feedback-title" id="feedbackTitle-Q10"></div>
+                        <div class="feedback-text" id="feedbackText-Q10"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 11 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 11 de 24 - Média</div>
+                    <div class="difficulty-badge medium">Média</div>
+                    <div class="question-text">Como a distribuição de energia solar na Terra funciona?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(10, 'C', 'Q11')">A) 50% refletida, 30% absorvida pela superfície e 20% absorvida pela atmosfera pelas nuvens e gases do ar</button>
+                        <button class="option-button" onclick="checkAnswer(10, 'C', 'Q11')">B) 19% refletida, 51% absorvida pela atmosfera e 30% absorvida pela superfície dos oceanos e continentes</button>
+                        <button class="option-button" onclick="checkAnswer(10, 'C', 'Q11')">C) 30% refletida, 51% absorvida pela superfície, 19% absorvida pela atmosfera</button>
+                        <button class="option-button" onclick="checkAnswer(10, 'C', 'Q11')">D) 70% refletida pelos oceanos, 20% absorvida pelas nuvens e apenas 10% chega de fato à superfície terrestre</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q11">
+                        <div class="feedback-title" id="feedbackTitle-Q11"></div>
+                        <div class="feedback-text" id="feedbackText-Q11"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 12 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 12 de 24 - Média</div>
+                    <div class="difficulty-badge medium">Média</div>
+                    <div class="question-text">O que é sequestro de carbono?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(11, 'A', 'Q12')">A) A captura e armazenamento de CO₂ da atmosfera por plantas e organismos fotossintetizantes</button>
+                        <button class="option-button" onclick="checkAnswer(11, 'A', 'Q12')">B) A liberação de CO₂ pelos vulcões ativos, que sequestram carbono do interior da Terra para a atmosfera</button>
+                        <button class="option-button" onclick="checkAnswer(11, 'A', 'Q12')">C) O processo de transformação do carbono em diamante nas camadas mais profundas da crosta terrestre densa</button>
+                        <button class="option-button" onclick="checkAnswer(11, 'A', 'Q12')">D) A decomposição de combustíveis fósseis em compostos de carbono mais simples e menos poluentes pelas bactérias</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q12">
+                        <div class="feedback-title" id="feedbackTitle-Q12"></div>
+                        <div class="feedback-text" id="feedbackText-Q12"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 13 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 13 de 24 - Média</div>
+                    <div class="difficulty-badge medium">Média</div>
+                    <div class="question-text">Por que o desmatamento intensifica o aquecimento global?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(12, 'C', 'Q13')">A) Porque as árvores refletem a luz solar de volta para o espaço e sem elas mais calor é absorvido pelo solo escuro</button>
+                        <button class="option-button" onclick="checkAnswer(12, 'C', 'Q13')">B) Porque a madeira cortada libera metano ao secar ao sol, um gás de efeito estufa muito mais potente que o CO₂</button>
+                        <button class="option-button" onclick="checkAnswer(12, 'C', 'Q13')">C) Reduz o sequestro de CO₂ (menos fotossíntese) e queimadas liberam o carbono armazenado</button>
+                        <button class="option-button" onclick="checkAnswer(12, 'C', 'Q13')">D) Porque sem árvores o vento aumenta, dispersando os gases de efeito estufa para outras regiões do planeta</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q13">
+                        <div class="feedback-title" id="feedbackTitle-Q13"></div>
+                        <div class="feedback-text" id="feedbackText-Q13"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 14 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 14 de 24 - Média</div>
+                    <div class="difficulty-badge medium">Média</div>
+                    <div class="question-text">Quais são as principais consequências do aquecimento global?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(13, 'B', 'Q14')">A) Aumento da biodiversidade nas regiões polares e maior produtividade agrícola nas áreas temperadas do planeta</button>
+                        <button class="option-button" onclick="checkAnswer(13, 'B', 'Q14')">B) Derretimento das geleiras, elevação do nível do mar, eventos climáticos extremos e perda de biodiversidade</button>
+                        <button class="option-button" onclick="checkAnswer(13, 'B', 'Q14')">C) Resfriamento dos oceanos, que absorvem o excesso de calor e redistribuem a temperatura de forma equilibrada</button>
+                        <button class="option-button" onclick="checkAnswer(13, 'B', 'Q14')">D) Aumento das chuvas em todo o planeta, resolvendo problemas de escassez de água em regiões áridas e semiáridas</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q14">
+                        <div class="feedback-title" id="feedbackTitle-Q14"></div>
+                        <div class="feedback-text" id="feedbackText-Q14"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 15 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 15 de 24 - Média</div>
+                    <div class="difficulty-badge medium">Média</div>
+                    <div class="question-text">O que são os CFCs e por que são prejudiciais?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(14, 'C', 'Q15')">A) São compostos de carbono e hidrogênio usados como combustível que ao queimar liberam CO₂ e vapor de água</button>
+                        <button class="option-button" onclick="checkAnswer(14, 'C', 'Q15')">B) São fertilizantes químicos que ao se decomporem no solo liberam óxido nitroso para a atmosfera continuamente</button>
+                        <button class="option-button" onclick="checkAnswer(14, 'C', 'Q15')">C) Clorofluorcarbonos que destroem a camada de ozônio, aumentando a exposição à radiação UV</button>
+                        <button class="option-button" onclick="checkAnswer(14, 'C', 'Q15')">D) São partículas de carbono microscópicas liberadas por motores que bloqueiam a radiação solar em áreas urbanas</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q15">
+                        <div class="feedback-title" id="feedbackTitle-Q15"></div>
+                        <div class="feedback-text" id="feedbackText-Q15"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 16 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 16 de 24 - Média</div>
+                    <div class="difficulty-badge medium">Média</div>
+                    <div class="question-text">O que é o ciclo do carbono?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(15, 'A', 'Q16')">A) A circulação de carbono entre atmosfera, seres vivos, solo e oceanos por fotossíntese, respiração e decomposição</button>
+                        <button class="option-button" onclick="checkAnswer(15, 'A', 'Q16')">B) O processo pelo qual o carbono se transforma em diamante sob alta pressão nas profundezas da Terra sólida</button>
+                        <button class="option-button" onclick="checkAnswer(15, 'A', 'Q16')">C) A sequência de reações químicas que ocorre dentro das mitocôndrias durante a respiração celular aeróbica</button>
+                        <button class="option-button" onclick="checkAnswer(15, 'A', 'Q16')">D) O ciclo de vida do carvão mineral, desde sua formação por fósseis até sua extração e queima pelas indústrias</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q16">
+                        <div class="feedback-title" id="feedbackTitle-Q16"></div>
+                        <div class="feedback-text" id="feedbackText-Q16"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 17 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 17 de 24 - Difícil</div>
+                    <div class="difficulty-badge hard">Difícil</div>
+                    <div class="question-text">Por que Mercúrio tem temperaturas tão extremas se recebe energia do Sol?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(16, 'B', 'Q17')">A) Porque Mercúrio está muito mais próximo do Sol do que a Terra, recebendo uma quantidade enorme de radiação solar</button>
+                        <button class="option-button" onclick="checkAnswer(16, 'B', 'Q17')">B) Sem atmosfera densa não há efeito estufa para reter calor — fica -173°C à noite e 426°C durante o dia</button>
+                        <button class="option-button" onclick="checkAnswer(16, 'B', 'Q17')">C) Porque Mercúrio gira muito devagar, ficando um lado sempre no sol e o outro sempre no escuro permanentemente</button>
+                        <button class="option-button" onclick="checkAnswer(16, 'B', 'Q17')">D) Porque a superfície de Mercúrio é totalmente coberta por rochas escuras que absorvem todo o calor solar recebido</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q17">
+                        <div class="feedback-title" id="feedbackTitle-Q17"></div>
+                        <div class="feedback-text" id="feedbackText-Q17"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 18 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 18 de 24 - Difícil</div>
+                    <div class="difficulty-badge hard">Difícil</div>
+                    <div class="question-text">Como a pecuária contribui para o aquecimento global?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(17, 'C', 'Q18')">A) Os animais de criação consomem grandes quantidades de oxigênio, reduzindo a concentração desse gás na atmosfera</button>
+                        <button class="option-button" onclick="checkAnswer(17, 'C', 'Q18')">B) As fazendas de gado ocupam áreas que poderiam ter painéis solares, desperdiçando energia renovável limpa</button>
+                        <button class="option-button" onclick="checkAnswer(17, 'C', 'Q18')">C) Libera metano (CH₄) na digestão dos ruminantes — gás com poder de aquecimento 25x maior que o CO₂</button>
+                        <button class="option-button" onclick="checkAnswer(17, 'C', 'Q18')">D) O calor corporal de bilhões de animais de criação aquece diretamente a atmosfera das regiões rurais do planeta</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q18">
+                        <div class="feedback-title" id="feedbackTitle-Q18"></div>
+                        <div class="feedback-text" id="feedbackText-Q18"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 19 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 19 de 24 - Difícil</div>
+                    <div class="difficulty-badge hard">Difícil</div>
+                    <div class="question-text">O que é o ciclo de retroalimentação negativa entre oceanos e CO₂?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(18, 'B', 'Q19')">A) Os oceanos absorvem CO₂ indefinidamente, funcionando como um sumidouro ilimitado que compensa toda poluição humana</button>
+                        <button class="option-button" onclick="checkAnswer(18, 'B', 'Q19')">B) Mais CO₂ → aquecimento dos oceanos → menos fotossíntese do fitoplâncton → menos captura de CO₂ → mais CO₂</button>
+                        <button class="option-button" onclick="checkAnswer(18, 'B', 'Q19')">C) Os oceanos liberam CO₂ durante o inverno e absorvem durante o verão, mantendo o equilíbrio climático natural</button>
+                        <button class="option-button" onclick="checkAnswer(18, 'B', 'Q19')">D) O resfriamento dos oceanos polares captura CO₂ que é depositado no fundo do mar por milhões de anos seguidos</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q19">
+                        <div class="feedback-title" id="feedbackTitle-Q19"></div>
+                        <div class="feedback-text" id="feedbackText-Q19"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 20 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 20 de 24 - Difícil</div>
+                    <div class="difficulty-badge hard">Difícil</div>
+                    <div class="question-text">Compare fotossíntese e respiração celular em termos de carbono e oxigênio.</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(19, 'B', 'Q20')">A) Ambos os processos consomem CO₂ e liberam O₂, mas em proporções diferentes conforme a intensidade luminosa</button>
+                        <button class="option-button" onclick="checkAnswer(19, 'B', 'Q20')">B) Fotossíntese: consome CO₂, libera O₂; respiração: consome O₂, libera CO₂</button>
+                        <button class="option-button" onclick="checkAnswer(19, 'B', 'Q20')">C) São processos idênticos que ocorrem em organelas diferentes — cloroplasto e mitocôndria respectivamente</button>
+                        <button class="option-button" onclick="checkAnswer(19, 'B', 'Q20')">D) Fotossíntese só ocorre durante o dia e respiração só ocorre à noite, alternando o balanço de gases diariamente</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q20">
+                        <div class="feedback-title" id="feedbackTitle-Q20"></div>
+                        <div class="feedback-text" id="feedbackText-Q20"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 21 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 21 de 24 - Difícil</div>
+                    <div class="difficulty-badge hard">Difícil</div>
+                    <div class="question-text">Por que a destruição do ozônio é um problema diferente do aquecimento global?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(20, 'C', 'Q21')">A) O problema do ozônio já foi completamente resolvido com o Protocolo de Montreal, ao contrário do aquecimento global</button>
+                        <button class="option-button" onclick="checkAnswer(20, 'C', 'Q21')">B) O ozônio afeta apenas regiões polares, enquanto o aquecimento global é um fenômeno exclusivo dos trópicos quentes</button>
+                        <button class="option-button" onclick="checkAnswer(20, 'C', 'Q21')">C) Ozônio: aumenta exposição à UV (câncer de pele, catarata); aquecimento: eleva temperatura global do planeta</button>
+                        <button class="option-button" onclick="checkAnswer(20, 'C', 'Q21')">D) São na verdade o mesmo problema com causas idênticas, apenas recebendo nomes diferentes pelos cientistas climáticos</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q21">
+                        <div class="feedback-title" id="feedbackTitle-Q21"></div>
+                        <div class="feedback-text" id="feedbackText-Q21"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 22 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 22 de 24 - Difícil</div>
+                    <div class="difficulty-badge hard">Difícil</div>
+                    <div class="question-text">Como a Revolução Industrial iniciou o aquecimento global?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(21, 'B', 'Q22')">A) As máquinas industriais geravam tanto calor mecânico que aqueceram diretamente o ar das cidades europeias</button>
+                        <button class="option-button" onclick="checkAnswer(21, 'B', 'Q22')">B) Iniciou o uso em massa de carvão e depois petróleo, lançando grandes quantidades de CO₂ na atmosfera</button>
+                        <button class="option-button" onclick="checkAnswer(21, 'B', 'Q22')">C) As indústrias desmataram as florestas europeias para obter madeira como combustível, eliminando o sequestro de carbono</button>
+                        <button class="option-button" onclick="checkAnswer(21, 'B', 'Q22')">D) A Revolução Industrial criou as cidades modernas, que por serem mais quentes que o campo elevaram a temperatura global</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q22">
+                        <div class="feedback-title" id="feedbackTitle-Q22"></div>
+                        <div class="feedback-text" id="feedbackText-Q22"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 23 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 23 de 24 - Difícil</div>
+                    <div class="difficulty-badge hard">Difícil</div>
+                    <div class="question-text">Explique a 2ª Lei da Termodinâmica com um exemplo cotidiano.</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(22, 'B', 'Q23')">A) A energia se conserva em todos os processos, como quando uma lâmpada converte eletricidade em luz e calor juntos</button>
+                        <button class="option-button" onclick="checkAnswer(22, 'B', 'Q23')">B) Sistemas tendem à desordem: um quarto organizado fica bagunçado sozinho, mas o contrário não ocorre naturalmente</button>
+                        <button class="option-button" onclick="checkAnswer(22, 'B', 'Q23')">C) O calor flui dos corpos mais frios para os mais quentes, como quando tocamos gelo e sentimos o frio no dedo</button>
+                        <button class="option-button" onclick="checkAnswer(22, 'B', 'Q23')">D) A pressão de um gás aumenta quando aquecido, como no pneu do carro que fica mais rígido no sol do verão quente</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q23">
+                        <div class="feedback-title" id="feedbackTitle-Q23"></div>
+                        <div class="feedback-text" id="feedbackText-Q23"></div>
+                    </div>
+                </div>
+
+                <!-- Questão 24 -->
+                <div class="question-card">
+                    <div class="question-number">Questão 24 de 24 - Difícil</div>
+                    <div class="difficulty-badge hard">Difícil</div>
+                    <div class="question-text">Como os cientistas sabem que o aquecimento global está ocorrendo?</div>
+                    <div class="options-container">
+                        <button class="option-button" onclick="checkAnswer(23, 'C', 'Q24')">A) Baseiam-se apenas em modelos matemáticos computacionais, sem dados observacionais concretos medidos em campo</button>
+                        <button class="option-button" onclick="checkAnswer(23, 'C', 'Q24')">B) Somente pelos registros históricos de temperatura dos últimos 200 anos feitos por estações meteorológicas terrestres</button>
+                        <button class="option-button" onclick="checkAnswer(23, 'C', 'Q24')">C) Medições de temperatura global, concentração de CO₂, derretimento de geleiras e acidificação dos oceanos</button>
+                        <button class="option-button" onclick="checkAnswer(23, 'C', 'Q24')">D) Exclusivamente pelos satélites lançados nas últimas décadas, que medem a temperatura da superfície do espaço sideral</button>
+                    </div>
+                    <div class="feedback" id="feedback-Q24">
+                        <div class="feedback-title" id="feedbackTitle-Q24"></div>
+                        <div class="feedback-text" id="feedbackText-Q24"></div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="prevBtn" onclick="previousQuestion()" disabled>← Anterior</button>
+                    <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Próxima →</button>
+                </div>
+            </div>
+
+            <!-- Tela de Resultados -->
+            <div class="results-container" id="resultsContainer">
+                <div class="score-circle" id="scoreCircle">0%</div>
+                <h2 class="results-title">Quiz Finalizado!</h2>
+
+                <div class="results-detail">
+                    <div class="result-item">
+                        <span class="result-label">Acertos:</span>
+                        <span class="result-value" id="correctCount">0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Erros:</span>
+                        <span class="result-value result-value.error" id="wrongCount">0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Percentual:</span>
+                        <span class="result-value" id="percentage">0%</span>
+                    </div>
+                </div>
+
+                <div class="motivational-message" id="motivationalMessage"></div>
+
+                <button class="home-button" onclick="window.location.href='index.html'">Voltar ao Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let selectedAnswers = {};
+        const totalQuestions = 24;
+
+        const answers = {
+            Q1: { correct: 'C', explanation: 'O efeito estufa é um fenômeno natural e essencial para a vida. Sem ele, a temperatura média seria -18°C, tornando impossível a vida como conhecemos. O aquecimento global é o agravamento deste fenômeno pelas atividades humanas.' },
+            Q2: { correct: 'B', explanation: 'Sem o efeito estufa, a temperatura média da Terra seria aproximadamente -18°C. O efeito estufa natural retém o calor necessário para manter o planeta adequado para a vida.' },
+            Q3: { correct: 'C', explanation: 'A temperatura média atual da Terra é de cerca de 15°C, graças ao efeito estufa natural. Este equilíbrio termodinâmico permite a existência de vida no planeta.' },
+            Q4: { correct: 'D', explanation: 'A 1ª Lei da Termodinâmica estabelece que a energia não se cria nem se destrói, apenas se transforma. Este é um princípio fundamental da física e da termodinâmica.' },
+            Q5: { correct: 'C', explanation: 'A fotossíntese ocorre nos cloroplastos das células vegetais. É nessas organelas que a energia solar é capturada e convertida em energia química durante a produção de glicose.' },
+            Q6: { correct: 'D', explanation: 'Os fitoplânctons (algas microscópicas e cianobactérias) produzem mais de 50% do oxigênio atmosférico da Terra. Apesar de menor visibilidade, são responsáveis por mais oxigênio que todas as florestas juntas.' },
+            Q7: { correct: 'B', explanation: 'O dióxido de carbono (CO₂) é o principal gás de efeito estufa liberado pela queima de combustíveis fósseis. Apesar de metano ser mais potente, o CO₂ é mais abundante e persistente.' },
+            Q8: { correct: 'C', explanation: 'Entropia é o grau de desordem de um sistema. De acordo com a 2ª Lei da Termodinâmica, sistemas isolados tendem a aumentar sua entropia espontaneamente.' },
+            Q9: { correct: 'B', explanation: 'Os 5 principais gases de efeito estufa são: CO₂ (dióxido de carbono), CH₄ (metano), N₂O (óxido nitroso), O₃ (ozônio) e vapor de água. Juntos, são responsáveis pelo aquecimento global.' },
+            Q10: { correct: 'B', explanation: 'O efeito estufa natural é benéfico e essencial para a vida, mantendo a temperatura adequada. O aquecimento global é o agravamento causado pelo excesso de gases poluentes lançados pelas atividades humanas desde a Revolução Industrial.' },
+            Q11: { correct: 'C', explanation: 'Da energia solar que chega à Terra, aproximadamente 30% é refletida de volta ao espaço, 51% é absorvida pela superfície terrestre, e 19% é absorvida pela atmosfera. Este equilíbrio é essencial para o clima.' },
+            Q12: { correct: 'A', explanation: 'Sequestro de carbono é a captura e armazenamento de CO₂ da atmosfera por plantas e organismos fotossintetizantes. É um processo vital para controlar o dióxido de carbono atmosférico.' },
+            Q13: { correct: 'C', explanation: 'O desmatamento intensifica o aquecimento global por dois motivos: reduz o sequestro de CO₂ (menos fotossíntese) e libera carbono armazenado pelas queimadas. Árvores absorvem CO₂ continuamente durante toda sua vida.' },
+            Q14: { correct: 'B', explanation: 'As principais consequências do aquecimento global são: derretimento das geleiras, elevação do nível do mar, eventos climáticos extremos (furacões, secas) e perda de biodiversidade. Todos afetam diretamente a vida na Terra.' },
+            Q15: { correct: 'C', explanation: 'CFCs (clorofluorcarbonos) são gases que destroem a camada de ozônio, aumentando a exposição à radiação ultravioleta. O Protocolo de Montreal controlou o uso desses gases a partir de 1987.' },
+            Q16: { correct: 'A', explanation: 'O ciclo do carbono é a circulação contínua de carbono entre a atmosfera, seres vivos, solo e oceanos, através de processos como fotossíntese, respiração e decomposição. Mantém o equilíbrio de carbono no planeta.' },
+            Q17: { correct: 'B', explanation: 'Mercúrio tem temperaturas extremas (-173°C à noite e 426°C durante o dia) porque não possui uma atmosfera densa para reter calor. Sem efeito estufa, a energia não é retida, causando variações extremas.' },
+            Q18: { correct: 'C', explanation: 'A pecuária contribui para o aquecimento global porque o gado libera metano (CH₄) durante a digestão. Este gás tem um potencial de aquecimento 25 vezes maior que o CO₂, representando uma grande fonte de emissões.' },
+            Q19: { correct: 'B', explanation: 'O ciclo de retroalimentação negativa entre oceanos e CO₂ é um processo perigoso: mais CO₂ aquece os oceanos, menos fitoplâncton realiza fotossíntese, menos CO₂ é capturado, levando a mais CO₂ na atmosfera.' },
+            Q20: { correct: 'B', explanation: 'Na fotossíntese, as plantas consomem CO₂ e liberam O₂. Na respiração celular, os organismos consomem O₂ e liberam CO₂. Estes processos são complementares e mantêm o equilíbrio de gases na atmosfera.' },
+            Q21: { correct: 'C', explanation: 'Os problemas são diferentes: destruição do ozônio aumenta a exposição à radiação UV (causando câncer de pele e cataratas), enquanto o aquecimento global eleva a temperatura média do planeta (causando clima extremo).' },
+            Q22: { correct: 'B', explanation: 'A Revolução Industrial iniciou o aquecimento global ao começar o uso em massa de carvão e posteriormente petróleo como combustíveis. Isso lançou quantidades enormes de CO₂ na atmosfera, intensificando o efeito estufa.' },
+            Q23: { correct: 'B', explanation: 'A 2ª Lei da Termodinâmica diz que sistemas tendem naturalmente ao aumento de desordem (entropia). Um quarto organizado fica bagunçado sozinho, mas o contrário não acontece sem trabalho - ilustra perfeitamente esta lei.' },
+            Q24: { correct: 'C', explanation: 'Os cientistas confirmam o aquecimento global através de múltiplas evidências: medições diretas de temperatura global, aumento de CO₂ atmosférico, derretimento de geleiras e acidificação dos oceanos. Estes dados são observacionais e mensuráveis.' }
+        };
+
+        function startQuiz() {
+            document.querySelector('.start-screen').classList.remove('active');
+            document.querySelector('.quiz-container').classList.add('active');
+            updateProgress();
+        }
+
+        function checkAnswer(questionIndex, correctAnswer, questionId) {
+            const buttons = document.querySelectorAll(`[onclick*="checkAnswer(${questionIndex}"]`);
+            const feedback = document.getElementById(`feedback-${questionId}`);
+            const feedbackTitle = document.getElementById(`feedbackTitle-${questionId}`);
+            const feedbackText = document.getElementById(`feedbackText-${questionId}`);
+
+            let selectedOption = null;
+
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                const optionLetter = ['A', 'B', 'C', 'D'][idx];
+
+                if (event.target === btn || event.target.parentElement === btn) {
+                    selectedOption = optionLetter;
+                    selectedAnswers[questionId] = optionLetter;
+
+                    if (optionLetter === correctAnswer) {
+                        btn.classList.add('correct');
+                        correctAnswers++;
+                        feedbackTitle.textContent = '✅ Parabéns! Você acertou!';
+                        feedback.classList.add('correct');
+                    } else {
+                        btn.classList.add('incorrect');
+                        feedback.classList.add('incorrect');
+                        feedbackTitle.textContent = '❌ Resposta incorreta';
+                    }
+                }
+
+                if (optionLetter === correctAnswer) {
+                    btn.classList.add('correct');
+                }
+            });
+
+            const explanation = answers[questionId].explanation;
+            feedbackText.innerHTML = `<strong>Explicação:</strong> ${explanation}`;
+            feedback.classList.add('show');
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions - 1) {
+                document.querySelectorAll('.question-card').forEach(card => card.classList.remove('active'));
+                currentQuestion++;
+                document.querySelectorAll('.question-card')[currentQuestion].classList.add('active');
+                updateProgress();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                document.querySelectorAll('.question-card').forEach(card => card.classList.remove('active'));
+                currentQuestion--;
+                document.querySelectorAll('.question-card')[currentQuestion].classList.add('active');
+                updateProgress();
+            }
+        }
+
+        function updateProgress() {
+            const progressPercentage = ((currentQuestion + 1) / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progressPercentage + '%';
+
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = currentQuestion === totalQuestions - 1 ? 'Finalizar →' : 'Próxima →';
+        }
+
+        function finishQuiz() {
+            document.querySelector('.quiz-container').classList.remove('active');
+            document.getElementById('resultsContainer').classList.add('active');
+
+            const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+            const wrongAnswers = totalQuestions - correctAnswers;
+
+            document.getElementById('scoreCircle').textContent = percentage + '%';
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('wrongCount').textContent = wrongAnswers;
+            document.getElementById('percentage').textContent = percentage + '%';
+
+            let message = '';
+            if (percentage === 100) {
+                message = '🏆 Parabéns! Você é um expert em Efeito Estufa e Termodinâmica! Desempenho perfeito!';
+            } else if (percentage >= 90) {
+                message = '⭐ Excelente! Você domina muito bem o conteúdo! Continue assim!';
+            } else if (percentage >= 75) {
+                message = '👏 Muito bom! Você entendeu bem a maior parte do conteúdo. Revise os temas com dificuldade!';
+            } else if (percentage >= 60) {
+                message = '📚 Bom início! Estude um pouco mais sobre os temas mais desafiadores.';
+            } else {
+                message = '💪 Não desista! Volte aos materiais de estudo e tente novamente em breve!';
+            }
+
+            document.getElementById('motivationalMessage').textContent = message;
+        }
+    </script>
+</body>
+</html>
